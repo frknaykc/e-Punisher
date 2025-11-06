@@ -196,4 +196,3 @@ export function EMiner({ demoMode }: EMinerProps) {
     </div>
   )
 }
-

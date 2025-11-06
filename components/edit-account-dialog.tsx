@@ -202,4 +202,3 @@ export function EditAccountDialog({ account, open, onOpenChange, onSuccess }: Ed
     </Dialog>
   )
 }
-

@@ -740,4 +740,3 @@ const response = await fetch("${endpoint.url}", {
     </div>
   )
 }
-
