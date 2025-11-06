@@ -1,7 +1,13 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  ThemedCard,
+  ThemedCardHeader,
+  ThemedCardTitle,
+  ThemedCardDescription,
+  ThemedCardContent,
+} from "@/components/ui/themed-card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -20,7 +26,7 @@ import {
   HelpCircle,
 } from "lucide-react"
 import { toast } from "sonner"
-import { apiClient, Account as ApiAccount } from "@/lib/api-client"
+import { apiClient, type Account as ApiAccount } from "@/lib/api-client"
 import { AccountImportModal } from "@/components/account-import-modal"
 import { EditAccountDialog } from "@/components/edit-account-dialog"
 import {
@@ -149,7 +155,7 @@ export function AccountManagement({ searchQuery = "", demoMode }: AccountManagem
     setIsLoading(true)
     try {
       const response = await apiClient.getAccounts()
-      
+
       // Backend hesaplarını frontend formatına çevir
       const backendAccounts: Account[] = response.accounts.map((acc: ApiAccount) => ({
         id: acc.id.toString(),
@@ -185,17 +191,11 @@ export function AccountManagement({ searchQuery = "", demoMode }: AccountManagem
     }
 
     try {
-      const updated = await apiClient.toggleAccountStatus(parseInt(accountId))
-      
+      const updated = await apiClient.toggleAccountStatus(Number.parseInt(accountId))
+
       // Local state güncelle
-      setAccounts((prev) =>
-        prev.map((acc) =>
-          acc.id === accountId
-            ? { ...acc, isActive: updated.is_active }
-            : acc
-        )
-      )
-      
+      setAccounts((prev) => prev.map((acc) => (acc.id === accountId ? { ...acc, isActive: updated.is_active } : acc)))
+
       toast.success("Hesap durumu güncellendi")
     } catch (error: any) {
       toast.error("İşlem başarısız", { description: error.message })
@@ -211,7 +211,7 @@ export function AccountManagement({ searchQuery = "", demoMode }: AccountManagem
     if (!confirm("Bu hesabı silmek istediğinizden emin misiniz?")) return
 
     try {
-      await apiClient.deleteAccount(parseInt(accountId))
+      await apiClient.deleteAccount(Number.parseInt(accountId))
       setAccounts((prev) => prev.filter((acc) => acc.id !== accountId))
       toast.success("Hesap silindi")
     } catch (error: any) {
@@ -226,7 +226,7 @@ export function AccountManagement({ searchQuery = "", demoMode }: AccountManagem
     }
 
     try {
-      const account = await apiClient.getAccount(parseInt(accountId))
+      const account = await apiClient.getAccount(Number.parseInt(accountId))
       setEditingAccount(account)
       setIsEditDialogOpen(true)
     } catch (error: any) {
@@ -342,12 +342,12 @@ export function AccountManagement({ searchQuery = "", demoMode }: AccountManagem
         </div>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Connected Accounts</CardTitle>
-          <CardDescription>Manage all your social media accounts in one place</CardDescription>
-        </CardHeader>
-        <CardContent>
+      <ThemedCard variant="glass">
+        <ThemedCardHeader>
+          <ThemedCardTitle size="xl">Connected Accounts</ThemedCardTitle>
+          <ThemedCardDescription>Manage all your social media accounts in one place</ThemedCardDescription>
+        </ThemedCardHeader>
+        <ThemedCardContent spacing="lg">
           <Table>
             <TableHeader>
               <TableRow>
@@ -362,7 +362,8 @@ export function AccountManagement({ searchQuery = "", demoMode }: AccountManagem
             </TableHeader>
             <TableBody>
               {filteredAccounts.map((account) => {
-                const platformConfig = platformIcons[account.platform as keyof typeof platformIcons] || platformIcons.unknown
+                const platformConfig =
+                  platformIcons[account.platform as keyof typeof platformIcons] || platformIcons.unknown
                 const PlatformIcon = platformConfig.icon
 
                 return (
@@ -424,7 +425,7 @@ export function AccountManagement({ searchQuery = "", demoMode }: AccountManagem
                           <DropdownMenuItem>View Analytics</DropdownMenuItem>
                           <DropdownMenuItem>Manage Tags</DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem 
+                          <DropdownMenuItem
                             className="text-destructive"
                             onClick={() => handleDeleteAccount(account.id)}
                           >
@@ -444,8 +445,8 @@ export function AccountManagement({ searchQuery = "", demoMode }: AccountManagem
               <p className="text-muted-foreground">No accounts found matching your criteria.</p>
             </div>
           )}
-        </CardContent>
-      </Card>
+        </ThemedCardContent>
+      </ThemedCard>
 
       {/* Edit Account Dialog */}
       <EditAccountDialog

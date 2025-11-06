@@ -27,7 +27,7 @@ import {
   ExternalLink,
 } from "lucide-react"
 import { useState } from "react"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ThemedTabs, ThemedTabsList, ThemedTabsTrigger } from "@/components/ui/themed-tabs"
 
 interface CalendarPlanningProps {
   demoMode?: boolean
@@ -175,46 +175,31 @@ export function CalendarPlanning({ demoMode = true }: CalendarPlanningProps) {
     <div className="flex h-full gap-4">
       {/* Main Calendar Area */}
       <div className="flex-1 space-y-4">
-        <Card className="glass-card border-primary/20">
+        <Card className="glass-card border-2 border-primary/40">
           <CardContent className="p-4">
             <div className="flex items-center justify-between gap-4">
               {/* Left Side - View and Filters */}
               <div className="flex items-center gap-3 flex-1">
                 {/* View Mode Selector */}
-                <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as ViewMode)}>
-                  <TabsList className="glass-card border border-primary/20">
-                    <TabsTrigger
-                      value="month"
-                      className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
-                    >
+                <ThemedTabs value={viewMode} onValueChange={(v) => setViewMode(v as ViewMode)}>
+                  <ThemedTabsList variant="glass">
+                    <ThemedTabsTrigger value="month" variant="glow">
                       Month
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="week"
-                      className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
-                    >
+                    </ThemedTabsTrigger>
+                    <ThemedTabsTrigger value="week" variant="glow">
                       Week
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="day"
-                      className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
-                    >
+                    </ThemedTabsTrigger>
+                    <ThemedTabsTrigger value="day" variant="glow">
                       Day
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="timeline"
-                      className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
-                    >
+                    </ThemedTabsTrigger>
+                    <ThemedTabsTrigger value="timeline" variant="glow">
                       Timeline
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="gantt"
-                      className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary"
-                    >
+                    </ThemedTabsTrigger>
+                    <ThemedTabsTrigger value="gantt" variant="glow">
                       Gantt
-                    </TabsTrigger>
-                  </TabsList>
-                </Tabs>
+                    </ThemedTabsTrigger>
+                  </ThemedTabsList>
+                </ThemedTabs>
 
                 {/* Search */}
                 <div className="relative flex-1 max-w-md">
@@ -223,7 +208,7 @@ export function CalendarPlanning({ demoMode = true }: CalendarPlanningProps) {
                     placeholder="Search tasks, cases, projects..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-9 glass-card border-primary/20 focus:border-primary/50"
+                    className="pl-9"
                   />
                 </div>
 
@@ -232,7 +217,7 @@ export function CalendarPlanning({ demoMode = true }: CalendarPlanningProps) {
                   variant="outline"
                   size="sm"
                   onClick={() => setShowFilters(!showFilters)}
-                  className="gap-2 glass-card border-primary/20 hover:border-primary/50 hover:bg-primary/10"
+                  className="gap-2 glass-card border-2 border-primary/40 hover:border-primary/60 hover:bg-primary/10"
                 >
                   <Filter className="h-4 w-4" />
                   Filters
@@ -252,7 +237,7 @@ export function CalendarPlanning({ demoMode = true }: CalendarPlanningProps) {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="gap-2 glass-card border-primary/20 hover:border-primary/50 hover:bg-primary/10 bg-transparent"
+                  className="gap-2 glass-card border-2 border-primary/40 hover:border-primary/60 hover:bg-primary/10 bg-transparent"
                 >
                   <RefreshCw className="h-4 w-4" />
                   Sync
@@ -271,7 +256,7 @@ export function CalendarPlanning({ demoMode = true }: CalendarPlanningProps) {
               <div className="mt-4 pt-4 border-t border-primary/20 grid grid-cols-4 gap-3">
                 <div>
                   <label className="text-xs text-muted-foreground mb-1 block">Type</label>
-                  <select className="w-full px-3 py-1.5 text-sm rounded-lg glass-card border border-primary/20 focus:border-primary/50 outline-none">
+                  <select className="w-full px-3 py-1.5 text-sm rounded-lg glass-card border-2 border-primary/30 focus:border-primary/50 outline-none">
                     <option>All Types</option>
                     <option>Post</option>
                     <option>Project</option>
@@ -282,7 +267,7 @@ export function CalendarPlanning({ demoMode = true }: CalendarPlanningProps) {
                 </div>
                 <div>
                   <label className="text-xs text-muted-foreground mb-1 block">Status</label>
-                  <select className="w-full px-3 py-1.5 text-sm rounded-lg glass-card border border-primary/20 focus:border-primary/50 outline-none">
+                  <select className="w-full px-3 py-1.5 text-sm rounded-lg glass-card border-2 border-primary/30 focus:border-primary/50 outline-none">
                     <option>All Status</option>
                     <option>Active</option>
                     <option>Completed</option>
@@ -292,7 +277,7 @@ export function CalendarPlanning({ demoMode = true }: CalendarPlanningProps) {
                 </div>
                 <div>
                   <label className="text-xs text-muted-foreground mb-1 block">Platform</label>
-                  <select className="w-full px-3 py-1.5 text-sm rounded-lg glass-card border border-primary/20 focus:border-primary/50 outline-none">
+                  <select className="w-full px-3 py-1.5 text-sm rounded-lg glass-card border-2 border-primary/30 focus:border-primary/50 outline-none">
                     <option>All Platforms</option>
                     <option>Twitter</option>
                     <option>Instagram</option>
@@ -301,7 +286,7 @@ export function CalendarPlanning({ demoMode = true }: CalendarPlanningProps) {
                 </div>
                 <div>
                   <label className="text-xs text-muted-foreground mb-1 block">Owner</label>
-                  <select className="w-full px-3 py-1.5 text-sm rounded-lg glass-card border border-primary/20 focus:border-primary/50 outline-none">
+                  <select className="w-full px-3 py-1.5 text-sm rounded-lg glass-card border-2 border-primary/30 focus:border-primary/50 outline-none">
                     <option>All Owners</option>
                     <option>Team Alpha</option>
                     <option>Security Team</option>
@@ -313,7 +298,7 @@ export function CalendarPlanning({ demoMode = true }: CalendarPlanningProps) {
           </CardContent>
         </Card>
 
-        <Card className="glass-card border-primary/20">
+        <Card className="glass-card border-2 border-primary/40">
           <CardHeader className="gradient-overlay">
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2">
@@ -371,7 +356,7 @@ export function CalendarPlanning({ demoMode = true }: CalendarPlanningProps) {
                     return (
                       <div
                         key={day}
-                        className="aspect-square rounded-lg glass-card border border-primary/10 hover:border-primary/30 smooth-transition p-2 flex flex-col"
+                        className="aspect-square rounded-lg glass-card border-2 border-primary/30 hover:border-primary/50 smooth-transition p-2 flex flex-col"
                       >
                         <div className="text-sm font-medium mb-1">{day}</div>
                         <div className="flex-1 space-y-1 overflow-hidden">
@@ -459,7 +444,7 @@ export function CalendarPlanning({ demoMode = true }: CalendarPlanningProps) {
       </div>
 
       {selectedEvent && (
-        <Card className="w-96 glass-card border-primary/20 flex flex-col">
+        <Card className="w-96 glass-card border-2 border-primary/40 flex flex-col">
           <CardHeader className="gradient-overlay">
             <div className="flex items-start justify-between">
               <div className="flex-1">

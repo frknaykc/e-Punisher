@@ -1,11 +1,13 @@
 "use client"
 
+import { Select } from "@/components/ui/select"
+
+import { SelectItem, SelectContent, SelectValue, SelectTrigger } from "@/components/ui/select"
 import { useState } from "react"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { ThemedCard, ThemedCardContent, HeaderCard } from "@/components/ui/themed-card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { ThemedTabs, ThemedTabsList, ThemedTabsTrigger, ThemedTabsContent } from "@/components/ui/themed-tabs"
 import { Database, Search, Plus, Map, Globe, Settings, Table, Code } from "lucide-react"
 
 interface EMinerProps {
@@ -19,59 +21,36 @@ export function EMiner({ demoMode }: EMinerProps) {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <Card className="glass-card border-primary/20">
-        <CardHeader className="text-center space-y-2 pb-8">
-          <h2 className="text-5xl font-bold text-foreground">e-Miner</h2>
-          <p className="text-muted-foreground text-lg">API, Docs and Playground - all in one place</p>
-        </CardHeader>
-      </Card>
+      <HeaderCard title="e-Miner" description="API, Docs and Playground - all in one place" />
 
-      {/* Main Content */}
-      <Card className="glass-card border-primary/20">
-        <CardContent className="p-6 space-y-6">
-          {/* Tab Navigation */}
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="glass-card border border-primary/20 p-1 h-auto">
-              <TabsTrigger
-                value="scrape"
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:glow-red-md smooth-transition px-6 py-3"
-              >
+      <ThemedCard variant="glass">
+        <ThemedCardContent spacing="lg">
+          <ThemedTabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <ThemedTabsList variant="glass">
+              <ThemedTabsTrigger value="scrape" variant="glow">
                 <Database className="h-4 w-4 mr-2" />
                 Scrape
-              </TabsTrigger>
-              <TabsTrigger
-                value="search"
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:glow-red-md smooth-transition px-6 py-3"
-              >
+              </ThemedTabsTrigger>
+              <ThemedTabsTrigger value="search" variant="glow">
                 <Search className="h-4 w-4 mr-2" />
                 Search
-              </TabsTrigger>
-              <TabsTrigger
-                value="new"
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:glow-red-md smooth-transition px-6 py-3"
-              >
+              </ThemedTabsTrigger>
+              <ThemedTabsTrigger value="new" variant="glow">
                 <Plus className="h-4 w-4 mr-2" />
                 New
-              </TabsTrigger>
-              <TabsTrigger
-                value="map"
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:glow-red-md smooth-transition px-6 py-3"
-              >
+              </ThemedTabsTrigger>
+              <ThemedTabsTrigger value="map" variant="glow">
                 <Map className="h-4 w-4 mr-2" />
                 Map
-              </TabsTrigger>
-              <TabsTrigger
-                value="crawl"
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:glow-red-md smooth-transition px-6 py-3"
-              >
+              </ThemedTabsTrigger>
+              <ThemedTabsTrigger value="crawl" variant="glow">
                 <Globe className="h-4 w-4 mr-2" />
                 Crawl
-              </TabsTrigger>
-            </TabsList>
+              </ThemedTabsTrigger>
+            </ThemedTabsList>
 
             {/* Scrape Tab Content */}
-            <TabsContent value="scrape" className="space-y-6 mt-6">
+            <ThemedTabsContent value="scrape" className="space-y-6 mt-6">
               {/* URL Input */}
               <div className="glass-card border border-primary/20 p-6 rounded-xl">
                 <div className="flex items-center gap-2">
@@ -135,64 +114,62 @@ export function EMiner({ demoMode }: EMinerProps) {
 
               {/* Results Area */}
               {demoMode && (
-                <Card className="glass-card border-primary/20">
-                  <CardHeader>
-                    <h3 className="text-lg font-semibold">Scraping Results</h3>
-                  </CardHeader>
-                  <CardContent>
+                <ThemedCard className="glass-card border-primary/20">
+                  <HeaderCard title="Scraping Results" />
+                  <ThemedCardContent spacing="lg">
                     <div className="space-y-4">
                       <div className="p-4 rounded-lg bg-background/50 border border-primary/10">
                         <p className="text-sm text-muted-foreground">Demo: Results will appear here after scraping</p>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
+                  </ThemedCardContent>
+                </ThemedCard>
               )}
-            </TabsContent>
+            </ThemedTabsContent>
 
             {/* Other Tabs */}
-            <TabsContent value="search" className="mt-6">
-              <Card className="glass-card border-primary/20">
-                <CardContent className="p-12 text-center">
+            <ThemedTabsContent value="search" className="mt-6">
+              <ThemedCard variant="glass">
+                <ThemedCardContent spacing="lg" className="text-center">
                   <Search className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <h3 className="text-xl font-semibold mb-2">Search Functionality</h3>
                   <p className="text-muted-foreground">Search through scraped data and saved results</p>
-                </CardContent>
-              </Card>
-            </TabsContent>
+                </ThemedCardContent>
+              </ThemedCard>
+            </ThemedTabsContent>
 
-            <TabsContent value="new" className="mt-6">
-              <Card className="glass-card border-primary/20">
-                <CardContent className="p-12 text-center">
+            <ThemedTabsContent value="new" className="mt-6">
+              <ThemedCard variant="glass">
+                <ThemedCardContent spacing="lg" className="text-center">
                   <Plus className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <h3 className="text-xl font-semibold mb-2">Create New Project</h3>
                   <p className="text-muted-foreground">Start a new scraping or crawling project</p>
-                </CardContent>
-              </Card>
-            </TabsContent>
+                </ThemedCardContent>
+              </ThemedCard>
+            </ThemedTabsContent>
 
-            <TabsContent value="map" className="mt-6">
-              <Card className="glass-card border-primary/20">
-                <CardContent className="p-12 text-center">
+            <ThemedTabsContent value="map" className="mt-6">
+              <ThemedCard variant="glass">
+                <ThemedCardContent spacing="lg" className="text-center">
                   <Map className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <h3 className="text-xl font-semibold mb-2">Site Mapping</h3>
                   <p className="text-muted-foreground">Visualize and map website structure</p>
-                </CardContent>
-              </Card>
-            </TabsContent>
+                </ThemedCardContent>
+              </ThemedCard>
+            </ThemedTabsContent>
 
-            <TabsContent value="crawl" className="mt-6">
-              <Card className="glass-card border-primary/20">
-                <CardContent className="p-12 text-center">
+            <ThemedTabsContent value="crawl" className="mt-6">
+              <ThemedCard variant="glass">
+                <ThemedCardContent spacing="lg" className="text-center">
                   <Globe className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <h3 className="text-xl font-semibold mb-2">Web Crawling</h3>
                   <p className="text-muted-foreground">Crawl multiple pages and follow links automatically</p>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
+                </ThemedCardContent>
+              </ThemedCard>
+            </ThemedTabsContent>
+          </ThemedTabs>
+        </ThemedCardContent>
+      </ThemedCard>
     </div>
   )
 }

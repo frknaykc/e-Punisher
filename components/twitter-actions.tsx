@@ -1,12 +1,18 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  ThemedCard,
+  ThemedCardTitle,
+  ThemedCardDescription,
+  ThemedCardContent,
+  SessionCard,
+} from "@/components/ui/themed-card"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ThemedTabs, ThemedTabsList, ThemedTabsTrigger, ThemedTabsContent } from "@/components/ui/themed-tabs"
 import {
   Send,
   Heart,
@@ -151,48 +157,46 @@ export function TwitterActions({ selectedAccounts, demoMode }: TwitterActionsPro
 
   return (
     <div className="space-y-6">
-      <Tabs defaultValue="post" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-6 h-auto p-1">
-          <TabsTrigger value="post" className="flex flex-col items-center gap-1.5 py-3">
+      <ThemedTabs defaultValue="post" className="space-y-4">
+        <ThemedTabsList variant="glass" className="grid w-full grid-cols-6 h-auto">
+          <ThemedTabsTrigger value="post" variant="icon-glow">
             <Send className="h-4 w-4" />
             <span className="text-xs">Send Post</span>
-          </TabsTrigger>
-          <TabsTrigger value="like" className="flex flex-col items-center gap-1.5 py-3">
+          </ThemedTabsTrigger>
+          <ThemedTabsTrigger value="like" variant="icon-glow">
             <Heart className="h-4 w-4" />
             <span className="text-xs">Like</span>
-          </TabsTrigger>
-          <TabsTrigger value="follow" className="flex flex-col items-center gap-1.5 py-3">
+          </ThemedTabsTrigger>
+          <ThemedTabsTrigger value="follow" variant="icon-glow">
             <UserPlus className="h-4 w-4" />
             <span className="text-xs">Follow</span>
-          </TabsTrigger>
-          <TabsTrigger value="reply" className="flex flex-col items-center gap-1.5 py-3">
+          </ThemedTabsTrigger>
+          <ThemedTabsTrigger value="reply" variant="icon-glow">
             <MessageCircle className="h-4 w-4" />
             <span className="text-xs">Reply</span>
-          </TabsTrigger>
-          <TabsTrigger value="retweet" className="flex flex-col items-center gap-1.5 py-3">
+          </ThemedTabsTrigger>
+          <ThemedTabsTrigger value="retweet" variant="icon-glow">
             <Repeat2 className="h-4 w-4" />
             <span className="text-xs">Retweet</span>
-          </TabsTrigger>
-          <TabsTrigger value="attack" className="flex flex-col items-center gap-1.5 py-3">
+          </ThemedTabsTrigger>
+          <ThemedTabsTrigger value="attack" variant="icon-glow">
             <AlertTriangle className="h-4 w-4" />
             <span className="text-xs">Attack</span>
-          </TabsTrigger>
-        </TabsList>
+          </ThemedTabsTrigger>
+        </ThemedTabsList>
 
-        <TabsContent value="post">
-          <Card className="border-2">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <Send className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <CardTitle>Send Post</CardTitle>
-                  <CardDescription>Create and send a tweet from selected accounts</CardDescription>
-                </div>
+        <ThemedTabsContent value="post">
+          <SessionCard>
+            <div className="flex items-center gap-2 mb-6">
+              <div className="p-2 rounded-lg bg-primary/10">
+                <Send className="h-5 w-5 text-primary" />
               </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
+              <div>
+                <ThemedCardTitle size="lg">Send Post</ThemedCardTitle>
+                <ThemedCardDescription>Create and send a tweet from selected accounts</ThemedCardDescription>
+              </div>
+            </div>
+            <ThemedCardContent spacing="lg">
               <div className="space-y-2">
                 <Label htmlFor="post-content">Tweet Content</Label>
                 <Textarea
@@ -260,24 +264,22 @@ export function TwitterActions({ selectedAccounts, demoMode }: TwitterActionsPro
                   </>
                 )}
               </Button>
-            </CardContent>
-          </Card>
-        </TabsContent>
+            </ThemedCardContent>
+          </SessionCard>
+        </ThemedTabsContent>
 
-        <TabsContent value="like">
-          <Card className="border-2">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <div className="p-2 rounded-lg bg-pink-500/10">
-                  <Heart className="h-5 w-5 text-pink-500" />
-                </div>
-                <div>
-                  <CardTitle>Like Tweets</CardTitle>
-                  <CardDescription>Like tweets from selected accounts</CardDescription>
-                </div>
+        <ThemedTabsContent value="like">
+          <SessionCard>
+            <div className="flex items-center gap-2 mb-6">
+              <div className="p-2 rounded-lg bg-pink-500/10">
+                <Heart className="h-5 w-5 text-pink-500" />
               </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
+              <div>
+                <ThemedCardTitle size="lg">Like Tweets</ThemedCardTitle>
+                <ThemedCardDescription>Like tweets from selected accounts</ThemedCardDescription>
+              </div>
+            </div>
+            <ThemedCardContent spacing="lg">
               <div className="space-y-2">
                 <Label htmlFor="tweet-url">Tweet URL</Label>
                 <Input
@@ -339,24 +341,22 @@ export function TwitterActions({ selectedAccounts, demoMode }: TwitterActionsPro
                   </>
                 )}
               </Button>
-            </CardContent>
-          </Card>
-        </TabsContent>
+            </ThemedCardContent>
+          </SessionCard>
+        </ThemedTabsContent>
 
-        <TabsContent value="follow">
-          <Card className="border-2">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <div className="p-2 rounded-lg bg-green-500/10">
-                  <UserPlus className="h-5 w-5 text-green-500" />
-                </div>
-                <div>
-                  <CardTitle>Follow Users</CardTitle>
-                  <CardDescription>Follow users from selected accounts</CardDescription>
-                </div>
+        <ThemedTabsContent value="follow">
+          <SessionCard>
+            <div className="flex items-center gap-2 mb-6">
+              <div className="p-2 rounded-lg bg-green-500/10">
+                <UserPlus className="h-5 w-5 text-green-500" />
               </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
+              <div>
+                <ThemedCardTitle size="lg">Follow Users</ThemedCardTitle>
+                <ThemedCardDescription>Follow users from selected accounts</ThemedCardDescription>
+              </div>
+            </div>
+            <ThemedCardContent spacing="lg">
               <div className="space-y-2">
                 <Label htmlFor="target-username">Target Username</Label>
                 <Input
@@ -421,24 +421,22 @@ export function TwitterActions({ selectedAccounts, demoMode }: TwitterActionsPro
                   </>
                 )}
               </Button>
-            </CardContent>
-          </Card>
-        </TabsContent>
+            </ThemedCardContent>
+          </SessionCard>
+        </ThemedTabsContent>
 
-        <TabsContent value="reply">
-          <Card className="border-2">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <div className="p-2 rounded-lg bg-blue-500/10">
-                  <MessageCircle className="h-5 w-5 text-blue-500" />
-                </div>
-                <div>
-                  <CardTitle>Reply to Tweet</CardTitle>
-                  <CardDescription>Reply to a tweet from selected accounts</CardDescription>
-                </div>
+        <ThemedTabsContent value="reply">
+          <SessionCard>
+            <div className="flex items-center gap-2 mb-6">
+              <div className="p-2 rounded-lg bg-blue-500/10">
+                <MessageCircle className="h-5 w-5 text-blue-500" />
               </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
+              <div>
+                <ThemedCardTitle size="lg">Reply to Tweet</ThemedCardTitle>
+                <ThemedCardDescription>Reply to a tweet from selected accounts</ThemedCardDescription>
+              </div>
+            </div>
+            <ThemedCardContent spacing="lg">
               <div className="space-y-2">
                 <Label htmlFor="reply-tweet-url">Tweet URL</Label>
                 <Input
@@ -516,24 +514,22 @@ export function TwitterActions({ selectedAccounts, demoMode }: TwitterActionsPro
                   </>
                 )}
               </Button>
-            </CardContent>
-          </Card>
-        </TabsContent>
+            </ThemedCardContent>
+          </SessionCard>
+        </ThemedTabsContent>
 
-        <TabsContent value="retweet">
-          <Card className="border-2">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <div className="p-2 rounded-lg bg-emerald-500/10">
-                  <Repeat2 className="h-5 w-5 text-emerald-500" />
-                </div>
-                <div>
-                  <CardTitle>Retweet</CardTitle>
-                  <CardDescription>Retweet from selected accounts</CardDescription>
-                </div>
+        <ThemedTabsContent value="retweet">
+          <SessionCard>
+            <div className="flex items-center gap-2 mb-6">
+              <div className="p-2 rounded-lg bg-emerald-500/10">
+                <Repeat2 className="h-5 w-5 text-emerald-500" />
               </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
+              <div>
+                <ThemedCardTitle size="lg">Retweet</ThemedCardTitle>
+                <ThemedCardDescription>Retweet from selected accounts</ThemedCardDescription>
+              </div>
+            </div>
+            <ThemedCardContent spacing="lg">
               <div className="space-y-2">
                 <Label htmlFor="retweet-url">Tweet URL</Label>
                 <Input
@@ -595,25 +591,23 @@ export function TwitterActions({ selectedAccounts, demoMode }: TwitterActionsPro
                   </>
                 )}
               </Button>
-            </CardContent>
-          </Card>
-        </TabsContent>
+            </ThemedCardContent>
+          </SessionCard>
+        </ThemedTabsContent>
 
-        <TabsContent value="attack">
+        <ThemedTabsContent value="attack">
           <div className="grid gap-4 md:grid-cols-2">
-            <Card className="border-2 border-destructive/50">
-              <CardHeader>
-                <div className="flex items-center gap-2">
-                  <div className="p-2 rounded-lg bg-destructive/10">
-                    <Flag className="h-5 w-5 text-destructive" />
-                  </div>
-                  <div>
-                    <CardTitle>Report Tweet</CardTitle>
-                    <CardDescription>Report a tweet for violating Twitter rules</CardDescription>
-                  </div>
+            <SessionCard variant="elevated">
+              <div className="flex items-center gap-2 mb-6">
+                <div className="p-2 rounded-lg bg-destructive/10">
+                  <Flag className="h-5 w-5 text-destructive" />
                 </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
+                <div>
+                  <ThemedCardTitle size="lg">Report Tweet</ThemedCardTitle>
+                  <ThemedCardDescription>Report a tweet for violating Twitter rules</ThemedCardDescription>
+                </div>
+              </div>
+              <ThemedCardContent spacing="lg">
                 <div className="space-y-2">
                   <Label htmlFor="report-tweet-url">Tweet URL</Label>
                   <Input
@@ -697,22 +691,20 @@ export function TwitterActions({ selectedAccounts, demoMode }: TwitterActionsPro
                     </>
                   )}
                 </Button>
-              </CardContent>
-            </Card>
+              </ThemedCardContent>
+            </SessionCard>
 
-            <Card className="border-2 border-destructive/50">
-              <CardHeader>
-                <div className="flex items-center gap-2">
-                  <div className="p-2 rounded-lg bg-destructive/10">
-                    <AlertTriangle className="h-5 w-5 text-destructive" />
-                  </div>
-                  <div>
-                    <CardTitle>Mark as Spam</CardTitle>
-                    <CardDescription>Mark a tweet or account as spam</CardDescription>
-                  </div>
+            <SessionCard variant="elevated">
+              <div className="flex items-center gap-2 mb-6">
+                <div className="p-2 rounded-lg bg-destructive/10">
+                  <AlertTriangle className="h-5 w-5 text-destructive" />
                 </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
+                <div>
+                  <ThemedCardTitle size="lg">Mark as Spam</ThemedCardTitle>
+                  <ThemedCardDescription>Mark a tweet or account as spam</ThemedCardDescription>
+                </div>
+              </div>
+              <ThemedCardContent spacing="lg">
                 <div className="space-y-2">
                   <Label htmlFor="spam-tweet-url">Tweet URL</Label>
                   <Input
@@ -794,19 +786,17 @@ export function TwitterActions({ selectedAccounts, demoMode }: TwitterActionsPro
                     </>
                   )}
                 </Button>
-              </CardContent>
-            </Card>
+              </ThemedCardContent>
+            </SessionCard>
           </div>
-        </TabsContent>
-      </Tabs>
+        </ThemedTabsContent>
+      </ThemedTabs>
 
       {actions.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Action History</CardTitle>
-            <CardDescription>Recent actions performed on your accounts</CardDescription>
-          </CardHeader>
-          <CardContent>
+        <ThemedCard variant="glass">
+          <ThemedCardTitle size="lg">Action History</ThemedCardTitle>
+          <ThemedCardDescription>Recent actions performed on your accounts</ThemedCardDescription>
+          <ThemedCardContent spacing="lg">
             <div className="space-y-3">
               {actions.map((action) => (
                 <div
@@ -834,8 +824,8 @@ export function TwitterActions({ selectedAccounts, demoMode }: TwitterActionsPro
                 </div>
               ))}
             </div>
-          </CardContent>
-        </Card>
+          </ThemedCardContent>
+        </ThemedCard>
       )}
     </div>
   )

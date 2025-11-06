@@ -1,10 +1,17 @@
 "use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  ThemedCard,
+  ThemedCardContent,
+  ThemedCardDescription,
+  ThemedCardHeader,
+  ThemedCardTitle,
+  StatsCard,
+} from "@/components/ui/themed-card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ThemedTabs, ThemedTabsList, ThemedTabsTrigger, ThemedTabsContent } from "@/components/ui/themed-tabs"
 import { Calendar, CheckCircle2, Clock, AlertCircle, TrendingUp, Users, Target } from "lucide-react"
 
 interface ProjectTask {
@@ -188,86 +195,57 @@ export function Projects({ demoMode = true }: ProjectsProps) {
       ) : (
         <>
           <div className="grid gap-4 md:grid-cols-4">
-            <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover-glow-red smooth-transition elevated-card">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <Target className="h-4 w-4" />
-                  Total Projects
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold">{mockProjects.length}</div>
-              </CardContent>
-            </Card>
-            <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover-glow-red smooth-transition elevated-card">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4" />
-                  Active
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-green-500">{activeProjects.length}</div>
-              </CardContent>
-            </Card>
-            <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover-glow-red smooth-transition elevated-card">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4" />
-                  Completed
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-blue-500">{completedProjects.length}</div>
-              </CardContent>
-            </Card>
-            <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover-glow-red smooth-transition elevated-card">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <Users className="h-4 w-4" />
-                  Team Members
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold">{new Set(mockProjects.flatMap((p) => p.team)).size}</div>
-              </CardContent>
-            </Card>
+            <StatsCard icon={Target} title="Total Projects" value={mockProjects.length.toString()} />
+            <StatsCard
+              icon={TrendingUp}
+              title="Active"
+              value={activeProjects.length.toString()}
+              valueClassName="text-green-500"
+            />
+            <StatsCard
+              icon={CheckCircle2}
+              title="Completed"
+              value={completedProjects.length.toString()}
+              valueClassName="text-blue-500"
+            />
+            <StatsCard
+              icon={Users}
+              title="Team Members"
+              value={new Set(mockProjects.flatMap((p) => p.team)).size.toString()}
+            />
           </div>
 
           {/* Projects Tabs */}
-          <Tabs defaultValue="active" className="space-y-4">
-            <TabsList className="bg-card/50 border border-border/50">
-              <TabsTrigger value="active" className="data-[state=active]:glow-red-sm">
+          <ThemedTabs defaultValue="active" className="space-y-4">
+            <ThemedTabsList variant="glass">
+              <ThemedTabsTrigger value="active" variant="glow">
                 Active Projects
-              </TabsTrigger>
-              <TabsTrigger value="completed" className="data-[state=active]:glow-red-sm">
+              </ThemedTabsTrigger>
+              <ThemedTabsTrigger value="completed" variant="glow">
                 Completed
-              </TabsTrigger>
-              <TabsTrigger value="all" className="data-[state=active]:glow-red-sm">
+              </ThemedTabsTrigger>
+              <ThemedTabsTrigger value="all" variant="glow">
                 All Projects
-              </TabsTrigger>
-            </TabsList>
+              </ThemedTabsTrigger>
+            </ThemedTabsList>
 
-            <TabsContent value="active" className="space-y-4">
+            <ThemedTabsContent value="active" className="space-y-4">
               {activeProjects.map((project) => (
-                <Card
-                  key={project.id}
-                  className="border-border/50 bg-card/50 backdrop-blur-sm hover-glow-red smooth-transition elevated-card gradient-overlay"
-                >
-                  <CardHeader>
+                <ThemedCard key={project.id} variant="elevated">
+                  <ThemedCardHeader>
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
-                          <CardTitle className="text-xl font-semibold">{project.name}</CardTitle>
+                          <ThemedCardTitle size="lg">{project.name}</ThemedCardTitle>
                           <Badge variant="outline" className={getStatusColor(project.status)}>
                             {project.status}
                           </Badge>
                         </div>
-                        <CardDescription className="text-base">{project.description}</CardDescription>
+                        <ThemedCardDescription>{project.description}</ThemedCardDescription>
                       </div>
                     </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
+                  </ThemedCardHeader>
+                  <ThemedCardContent spacing="lg">
                     <div className="space-y-2">
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-muted-foreground font-medium">Progress</span>
@@ -336,31 +314,28 @@ export function Projects({ demoMode = true }: ProjectsProps) {
                         Edit Project
                       </Button>
                     </div>
-                  </CardContent>
-                </Card>
+                  </ThemedCardContent>
+                </ThemedCard>
               ))}
-            </TabsContent>
+            </ThemedTabsContent>
 
-            <TabsContent value="completed" className="space-y-4">
+            <ThemedTabsContent value="completed" className="space-y-4">
               {completedProjects.map((project) => (
-                <Card
-                  key={project.id}
-                  className="border-border/50 bg-card/50 backdrop-blur-sm hover-glow-red transition-all opacity-80"
-                >
-                  <CardHeader>
+                <ThemedCard key={project.id} variant="glass">
+                  <ThemedCardHeader>
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
-                          <CardTitle className="text-xl">{project.name}</CardTitle>
+                          <ThemedCardTitle size="lg">{project.name}</ThemedCardTitle>
                           <Badge variant="outline" className={getStatusColor(project.status)}>
                             {project.status}
                           </Badge>
                         </div>
-                        <CardDescription>{project.description}</CardDescription>
+                        <ThemedCardDescription>{project.description}</ThemedCardDescription>
                       </div>
                     </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
+                  </ThemedCardHeader>
+                  <ThemedCardContent spacing="lg">
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <Calendar className="h-4 w-4" />
@@ -376,31 +351,28 @@ export function Projects({ demoMode = true }: ProjectsProps) {
                     <Button variant="outline" size="sm" className="hover-glow-red bg-transparent">
                       View Summary
                     </Button>
-                  </CardContent>
-                </Card>
+                  </ThemedCardContent>
+                </ThemedCard>
               ))}
-            </TabsContent>
+            </ThemedTabsContent>
 
-            <TabsContent value="all" className="space-y-4">
+            <ThemedTabsContent value="all" className="space-y-4">
               {mockProjects.map((project) => (
-                <Card
-                  key={project.id}
-                  className="border-border/50 bg-card/50 backdrop-blur-sm hover-glow-red transition-all"
-                >
-                  <CardHeader>
+                <ThemedCard key={project.id}>
+                  <ThemedCardHeader>
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
-                          <CardTitle className="text-xl">{project.name}</CardTitle>
+                          <ThemedCardTitle size="lg">{project.name}</ThemedCardTitle>
                           <Badge variant="outline" className={getStatusColor(project.status)}>
                             {project.status}
                           </Badge>
                         </div>
-                        <CardDescription>{project.description}</CardDescription>
+                        <ThemedCardDescription>{project.description}</ThemedCardDescription>
                       </div>
                     </div>
-                  </CardHeader>
-                  <CardContent>
+                  </ThemedCardHeader>
+                  <ThemedCardContent spacing="lg">
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <span className="font-medium">Progress:</span>
@@ -417,11 +389,11 @@ export function Projects({ demoMode = true }: ProjectsProps) {
                         </span>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
+                  </ThemedCardContent>
+                </ThemedCard>
               ))}
-            </TabsContent>
-          </Tabs>
+            </ThemedTabsContent>
+          </ThemedTabs>
         </>
       )}
     </div>

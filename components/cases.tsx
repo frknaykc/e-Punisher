@@ -1,11 +1,18 @@
 "use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  ThemedCard,
+  ThemedCardHeader,
+  ThemedCardTitle,
+  ThemedCardDescription,
+  ThemedCardContent,
+  StatsCard,
+} from "@/components/ui/themed-card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Plus, Search, Filter, Clock, CheckCircle2, UserCircle, Puzzle } from "lucide-react"
+import { Plus, Search, Filter, Clock, CheckCircle2, UserCircle } from "lucide-react"
 import { useState } from "react"
 
 interface Case {
@@ -167,89 +174,52 @@ const Cases = ({ demoMode = true }: { demoMode?: boolean }) => {
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">
-        <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover-glow-red smooth-transition elevated-card">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Cases</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{mockCases.length}</div>
-          </CardContent>
-        </Card>
-        <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover-glow-red smooth-transition elevated-card">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Open</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-blue-500">
-              {mockCases.filter((c) => c.status === "open").length}
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover-glow-red smooth-transition elevated-card">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Assigned</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-yellow-500">
-              {mockCases.filter((c) => c.status === "assigned").length}
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover-glow-red smooth-transition elevated-card">
-          <CardHeader>
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">Closed</CardTitle>
-                </div>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-green-500">
-              {mockCases.filter((c) => c.status === "closed").length}
-            </div>
-          </CardContent>
-        </Card>
+        <StatsCard value={mockCases.length.toString()} label="Total Cases" />
+        <StatsCard
+          value={mockCases.filter((c) => c.status === "open").length.toString()}
+          label="Open"
+          valueColor="text-blue-500"
+        />
+        <StatsCard
+          value={mockCases.filter((c) => c.status === "assigned").length.toString()}
+          label="Assigned"
+          valueColor="text-yellow-500"
+        />
+        <StatsCard
+          value={mockCases.filter((c) => c.status === "closed").length.toString()}
+          label="Closed"
+          valueColor="text-green-500"
+        />
       </div>
 
       <div className="grid gap-4">
         {!demoMode ? (
-          <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
-            <CardContent className="flex flex-col items-center justify-center h-64 space-y-4">
-              <div className="p-6 rounded-full bg-muted">
-                <Puzzle className="h-12 w-12 text-muted-foreground" />
-              </div>
-              <div className="text-center space-y-2">
-                <h3 className="text-xl font-semibold">No Cases Available</h3>
-                <p className="text-muted-foreground max-w-md">
-                  Demo data is currently disabled. Enable demo mode in Settings to view sample cases.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+          <ThemedCard className="border-glow-red">
+            <ThemedCardContent className="flex items-center justify-center h-64">
+              <p className="text-muted-foreground">
+                Demo data is currently disabled. Enable demo mode in Settings to view sample cases.
+              </p>
+            </ThemedCardContent>
+          </ThemedCard>
         ) : filteredCases.length === 0 ? (
-          <Card className="border-glow-red">
-            <CardContent className="flex items-center justify-center h-64">
+          <ThemedCard className="border-glow-red">
+            <ThemedCardContent className="flex items-center justify-center h-64">
               <p className="text-muted-foreground">No cases found matching your filters.</p>
-            </CardContent>
-          </Card>
+            </ThemedCardContent>
+          </ThemedCard>
         ) : (
           filteredCases.map((caseItem) => (
-            <Card
-              key={caseItem.id}
-              className="border-border/50 bg-card/50 backdrop-blur-sm hover-glow-red smooth-transition elevated-card gradient-overlay"
-            >
-              <CardHeader>
+            <ThemedCard key={caseItem.id} variant="glass">
+              <ThemedCardHeader>
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
-                      <CardTitle className="text-lg font-semibold">{caseItem.title}</CardTitle>
+                      <ThemedCardTitle size="lg">{caseItem.title}</ThemedCardTitle>
                       <Badge variant="outline" className={getPriorityColor(caseItem.priority)}>
                         {caseItem.priority}
                       </Badge>
                     </div>
-                    <CardDescription className="text-base">{caseItem.description}</CardDescription>
+                    <ThemedCardDescription>{caseItem.description}</ThemedCardDescription>
                   </div>
                   <Badge variant="outline" className={getStatusColor(caseItem.status)}>
                     <span className="flex items-center gap-1">
@@ -258,8 +228,8 @@ const Cases = ({ demoMode = true }: { demoMode?: boolean }) => {
                     </span>
                   </Badge>
                 </div>
-              </CardHeader>
-              <CardContent>
+              </ThemedCardHeader>
+              <ThemedCardContent>
                 <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                   <div className="flex items-center gap-1">
                     <span className="font-medium">Platform:</span>
@@ -281,8 +251,8 @@ const Cases = ({ demoMode = true }: { demoMode?: boolean }) => {
                     </Button>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </ThemedCardContent>
+            </ThemedCard>
           ))
         )}
       </div>

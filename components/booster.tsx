@@ -5,12 +5,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { ThemedTabs, ThemedTabsList, ThemedTabsTrigger, ThemedTabsContent } from "@/components/ui/themed-tabs"
 import {
   Rocket,
   TrendingUp,
@@ -27,8 +27,7 @@ import {
   Shuffle,
   Loader2,
 } from "lucide-react"
-import { apiClient, Account } from "@/lib/api-client"
-import { toast } from "sonner"
+import { apiClient, type Account } from "@/lib/api-client"
 
 interface BoosterProps {
   demoMode?: boolean
@@ -88,14 +87,14 @@ export function Booster({ demoMode = true }: BoosterProps) {
     setIsLoadingAccounts(true)
     try {
       const response = await apiClient.getAccounts(selectedPlatform, true)
-      
+
       const formattedAccounts: AccountItem[] = response.accounts.map((acc: Account) => ({
         id: acc.id.toString(),
         username: acc.username,
         followers: "0",
         status: acc.is_active ? "active" : "inactive",
       }))
-      
+
       setAccounts(formattedAccounts)
     } catch (error: any) {
       console.error("Hesaplar yüklenemedi:", error)
@@ -163,23 +162,17 @@ export function Booster({ demoMode = true }: BoosterProps) {
   return (
     <div className="flex gap-6">
       <div className="flex-1 space-y-6">
-        <Tabs defaultValue="campaigns" className="space-y-6">
-          <TabsList className="glass-card p-1.5">
-            <TabsTrigger
-              value="campaigns"
-              className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary data-[state=active]:shadow-[0_0_20px_rgba(239,68,68,0.5)] data-[state=active]:border data-[state=active]:border-primary/50 px-6 py-2.5 font-medium transition-all duration-300"
-            >
+        <ThemedTabs defaultValue="campaigns" className="space-y-6">
+          <ThemedTabsList variant="glass">
+            <ThemedTabsTrigger value="campaigns" variant="glow">
               Active Campaigns
-            </TabsTrigger>
-            <TabsTrigger
-              value="create"
-              className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary data-[state=active]:shadow-[0_0_20px_rgba(239,68,68,0.5)] data-[state=active]:border data-[state=active]:border-primary/50 px-6 py-2.5 font-medium transition-all duration-300"
-            >
+            </ThemedTabsTrigger>
+            <ThemedTabsTrigger value="create" variant="glow">
               Create Campaign
-            </TabsTrigger>
-          </TabsList>
+            </ThemedTabsTrigger>
+          </ThemedTabsList>
 
-          <TabsContent value="campaigns" className="space-y-6">
+          <ThemedTabsContent value="campaigns" className="space-y-6">
             {!demoMode ? (
               <div className="flex flex-col items-center justify-center h-[60vh] space-y-4">
                 <div className="p-6 rounded-full bg-muted">
@@ -274,9 +267,9 @@ export function Booster({ demoMode = true }: BoosterProps) {
                 </div>
               </>
             )}
-          </TabsContent>
+          </ThemedTabsContent>
 
-          <TabsContent value="create" className="space-y-6">
+          <ThemedTabsContent value="create" className="space-y-6">
             <Card className="glass-card">
               <CardHeader className="gradient-overlay">
                 <CardTitle>Create New Boost Campaign</CardTitle>
@@ -395,8 +388,8 @@ export function Booster({ demoMode = true }: BoosterProps) {
                 </Button>
               </CardContent>
             </Card>
-          </TabsContent>
-        </Tabs>
+          </ThemedTabsContent>
+        </ThemedTabs>
       </div>
 
       {showAccountSelector && (
@@ -460,32 +453,36 @@ export function Booster({ demoMode = true }: BoosterProps) {
                 ) : accounts.length > 0 ? (
                   <div className="space-y-2">
                     {accounts.map((account) => (
-                    <div
-                      key={account.id}
-                      className="flex items-center space-x-3 p-3 rounded-lg glass-card hover:bg-primary/5 smooth-transition"
-                    >
-                      <Checkbox
-                        id={account.id}
-                        checked={selectedAccounts.includes(account.id)}
-                        onCheckedChange={() => handleAccountToggle(account.id)}
-                        className="border-primary/50"
-                      />
-                      <label htmlFor={account.id} className="flex-1 cursor-pointer">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-sm font-medium">{account.username}</p>
-                            {account.followers !== "0" && (
-                              <p className="text-xs text-muted-foreground">{account.followers} followers</p>
-                            )}
+                      <div
+                        key={account.id}
+                        className={`flex items-center space-x-3 p-3 rounded-lg glass-card smooth-transition ${
+                          selectedAccounts.includes(account.id)
+                            ? "border-2 border-primary bg-primary/10 shadow-[0_0_15px_rgba(239,68,68,0.3)]"
+                            : "border-2 border-transparent hover:bg-primary/5 hover:border-primary/30"
+                        }`}
+                      >
+                        <Checkbox
+                          id={account.id}
+                          checked={selectedAccounts.includes(account.id)}
+                          onCheckedChange={() => handleAccountToggle(account.id)}
+                          className="border-2 border-primary/60 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                        />
+                        <label htmlFor={account.id} className="flex-1 cursor-pointer">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-sm font-medium">{account.username}</p>
+                              {account.followers !== "0" && (
+                                <p className="text-xs text-muted-foreground">{account.followers} followers</p>
+                              )}
+                            </div>
+                            <Badge variant={account.status === "active" ? "default" : "secondary"} className="text-xs">
+                              {account.status}
+                            </Badge>
                           </div>
-                          <Badge variant={account.status === "active" ? "default" : "secondary"} className="text-xs">
-                            {account.status}
-                          </Badge>
-                        </div>
-                      </label>
-                    </div>
-                  ))}
-                </div>
+                        </label>
+                      </div>
+                    ))}
+                  </div>
                 ) : (
                   <div className="text-center py-12">
                     <p className="text-muted-foreground mb-2">No {selectedPlatform} accounts available</p>

@@ -1,12 +1,20 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  ThemedCard,
+  ThemedCardHeader,
+  ThemedCardTitle,
+  ThemedCardDescription,
+  ThemedCardContent,
+  StatsCard,
+  SessionCard,
+} from "@/components/ui/themed-card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ThemedTabs, ThemedTabsList, ThemedTabsTrigger, ThemedTabsContent } from "@/components/ui/themed-tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -27,8 +35,7 @@ import {
   Shuffle,
   Loader2,
 } from "lucide-react"
-import { apiClient, Account } from "@/lib/api-client"
-import { toast } from "sonner"
+import { apiClient, type Account } from "@/lib/api-client"
 
 interface AttackProps {
   demoMode?: boolean
@@ -87,14 +94,14 @@ export function Attack({ demoMode = true }: AttackProps) {
     setIsLoadingAccounts(true)
     try {
       const response = await apiClient.getAccounts(selectedPlatform, true)
-      
+
       const formattedAccounts: AccountItem[] = response.accounts.map((acc: Account) => ({
         id: acc.id.toString(),
         username: acc.username,
         followers: "0",
         status: acc.is_active ? "active" : "inactive",
       }))
-      
+
       setAccounts(formattedAccounts)
     } catch (error: any) {
       console.error("Hesaplar yüklenemedi:", error)
@@ -156,23 +163,17 @@ export function Attack({ demoMode = true }: AttackProps) {
   return (
     <div className="flex gap-6">
       <div className="flex-1 space-y-6">
-        <Tabs defaultValue="operations" className="space-y-6">
-          <TabsList className="glass-card p-1.5">
-            <TabsTrigger
-              value="operations"
-              className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary data-[state=active]:shadow-[0_0_20px_rgba(239,68,68,0.5)] data-[state=active]:border data-[state=active]:border-primary/50 px-6 py-2.5 font-medium transition-all duration-300"
-            >
+        <ThemedTabs defaultValue="operations" className="space-y-6">
+          <ThemedTabsList variant="glass">
+            <ThemedTabsTrigger value="operations" variant="glow">
               Active Operations
-            </TabsTrigger>
-            <TabsTrigger
-              value="create"
-              className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary data-[state=active]:shadow-[0_0_20px_rgba(239,68,68,0.5)] data-[state=active]:border data-[state=active]:border-primary/50 px-6 py-2.5 font-medium transition-all duration-300"
-            >
+            </ThemedTabsTrigger>
+            <ThemedTabsTrigger value="create" variant="glow">
               Create Operation
-            </TabsTrigger>
-          </TabsList>
+            </ThemedTabsTrigger>
+          </ThemedTabsList>
 
-          <TabsContent value="operations" className="space-y-6">
+          <ThemedTabsContent value="operations" className="space-y-6">
             {!demoMode ? (
               <div className="flex flex-col items-center justify-center h-[60vh] space-y-4">
                 <div className="p-6 rounded-full bg-muted">
@@ -188,45 +189,25 @@ export function Attack({ demoMode = true }: AttackProps) {
             ) : (
               <>
                 <div className="grid gap-6 md:grid-cols-3">
-                  <Card className="glass-card hover-glow-red smooth-transition">
-                    <CardHeader className="gradient-overlay pb-3">
-                      <Crosshair className="h-8 w-8 text-primary mb-2" />
-                      <CardTitle className="text-2xl">{operations.length}</CardTitle>
-                      <CardDescription>Active Operations</CardDescription>
-                    </CardHeader>
-                  </Card>
-
-                  <Card className="glass-card hover-glow-red smooth-transition">
-                    <CardHeader className="gradient-overlay pb-3">
-                      <Activity className="h-8 w-8 text-primary mb-2" />
-                      <CardTitle className="text-2xl">24/7</CardTitle>
-                      <CardDescription>Monitoring Status</CardDescription>
-                    </CardHeader>
-                  </Card>
-
-                  <Card className="glass-card hover-glow-red smooth-transition">
-                    <CardHeader className="gradient-overlay pb-3">
-                      <AlertTriangle className="h-8 w-8 text-primary mb-2" />
-                      <CardTitle className="text-2xl">0</CardTitle>
-                      <CardDescription>Active Threats</CardDescription>
-                    </CardHeader>
-                  </Card>
+                  <StatsCard icon={Crosshair} value={operations.length.toString()} label="Active Operations" />
+                  <StatsCard icon={Activity} value="24/7" label="Monitoring Status" />
+                  <StatsCard icon={AlertTriangle} value="0" label="Active Threats" />
                 </div>
 
                 <div className="space-y-4">
                   {operations.map((operation) => {
                     const Icon = platformIcons[operation.platform]
                     return (
-                      <Card key={operation.id} className="glass-card hover-glow-red smooth-transition">
-                        <CardHeader className="gradient-overlay">
+                      <ThemedCard key={operation.id} variant="glass">
+                        <ThemedCardHeader>
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
                               <Icon className="h-5 w-5 text-primary" />
                               <div>
-                                <CardTitle className="text-lg">{operation.name}</CardTitle>
-                                <CardDescription className="capitalize">
+                                <ThemedCardTitle size="lg">{operation.name}</ThemedCardTitle>
+                                <ThemedCardDescription className="capitalize">
                                   {operation.platform} • {attackTypes[operation.type].label}
-                                </CardDescription>
+                                </ThemedCardDescription>
                               </div>
                             </div>
                             <div className="flex items-center gap-2">
@@ -246,8 +227,8 @@ export function Attack({ demoMode = true }: AttackProps) {
                               </Badge>
                             </div>
                           </div>
-                        </CardHeader>
-                        <CardContent className="pt-6">
+                        </ThemedCardHeader>
+                        <ThemedCardContent>
                           <div className="space-y-3">
                             <div className="flex items-center justify-between text-sm">
                               <span className="text-muted-foreground">Target: {operation.target}</span>
@@ -262,22 +243,22 @@ export function Attack({ demoMode = true }: AttackProps) {
                               Manage Operation
                             </Button>
                           </div>
-                        </CardContent>
-                      </Card>
+                        </ThemedCardContent>
+                      </ThemedCard>
                     )
                   })}
                 </div>
               </>
             )}
-          </TabsContent>
+          </ThemedTabsContent>
 
-          <TabsContent value="create" className="space-y-6">
-            <Card className="glass-card">
-              <CardHeader className="gradient-overlay">
-                <CardTitle>Create New Operation</CardTitle>
-                <CardDescription>Launch a strategic social media attack operation</CardDescription>
-              </CardHeader>
-              <CardContent className="pt-6 space-y-6">
+          <ThemedTabsContent value="create" className="space-y-6">
+            <SessionCard>
+              <ThemedCardHeader>
+                <ThemedCardTitle size="xl">Create New Operation</ThemedCardTitle>
+                <ThemedCardDescription>Launch a strategic social media attack operation</ThemedCardDescription>
+              </ThemedCardHeader>
+              <ThemedCardContent spacing="lg">
                 <div className="grid gap-6 md:grid-cols-2">
                   <div className="space-y-2">
                     <Label>Select Platform</Label>
@@ -398,25 +379,23 @@ export function Attack({ demoMode = true }: AttackProps) {
                   <Zap className="h-5 w-5" />
                   Launch Operation
                 </Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+              </ThemedCardContent>
+            </SessionCard>
+          </ThemedTabsContent>
+        </ThemedTabs>
       </div>
 
       {showAccountSelector && (
         <div className="w-80 space-y-4">
-          <Card className="glass-card sticky top-6">
-            <CardHeader className="gradient-overlay pb-4">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Select Accounts</CardTitle>
-                <Button variant="ghost" size="sm" onClick={() => setShowAccountSelector(false)} className="h-8 w-8 p-0">
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-              <CardDescription className="capitalize">{selectedPlatform} accounts</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
+          <SessionCard className="sticky top-6">
+            <div className="flex items-center justify-between mb-4">
+              <ThemedCardTitle size="lg">Select Accounts</ThemedCardTitle>
+              <Button variant="ghost" size="sm" onClick={() => setShowAccountSelector(false)} className="h-8 w-8 p-0">
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            <ThemedCardDescription className="capitalize">{selectedPlatform} accounts</ThemedCardDescription>
+            <ThemedCardContent spacing="lg">
               <div className="flex flex-wrap gap-2">
                 <Button
                   variant="outline"
@@ -504,8 +483,8 @@ export function Attack({ demoMode = true }: AttackProps) {
                   {selectedAccounts.length} of {accounts.length} accounts selected
                 </p>
               </div>
-            </CardContent>
-          </Card>
+            </ThemedCardContent>
+          </SessionCard>
         </div>
       )}
     </div>

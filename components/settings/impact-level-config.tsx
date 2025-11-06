@@ -1,13 +1,64 @@
 "use client"
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState, useEffect } from "react"
+import {
+  ThemedCard,
+  ThemedCardContent,
+  ThemedCardTitle,
+  ThemedCardDescription,
+  ThemedCardHeader,
+} from "@/components/ui/themed-card"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Slider } from "@/components/ui/slider"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Settings, Save, RotateCcw } from "lucide-react"
+import { ThemedTabs, ThemedTabsList, ThemedTabsTrigger, ThemedTabsContent } from "@/components/ui/themed-tabs"
+import { Settings, Save, RotateCcw, Database, Trash2, Edit2, Power, PowerOff, Clock, Tag } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Textarea } from "@/components/ui/textarea"
+import { toast } from "sonner"
+
+interface ConfiguredEndpoint {
+  id: number
+  url: string
+  method: string
+  action_type: string
+  platform: string
+  configured_at: string
+  usage_description: string
+  is_active: boolean
+}
+
+function parseUrl(url: string) {
+  try {
+    const urlObj = new URL(url)
+    return {
+      protocol: urlObj.protocol.replace(":", ""),
+      hostname: urlObj.hostname,
+      path: urlObj.pathname,
+      search: urlObj.search,
+      hash: urlObj.hash,
+    }
+  } catch {
+    return null
+  }
+}
+
+function UrlHighlight({ url }: { url: string }) {
+  const parsed = parseUrl(url)
+  if (!parsed) return <span className="font-mono text-sm">{url}</span>
+
+  return (
+    <div className="font-mono text-sm break-all">
+      <span className="text-yellow-500">{parsed.protocol}</span>
+      <span className="text-muted-foreground">://</span>
+      <span className="text-blue-400">{parsed.hostname}</span>
+      <span className="text-green-400">{parsed.path}</span>
+      {parsed.search && <span className="text-purple-400">{parsed.search}</span>}
+      {parsed.hash && <span className="text-orange-400">{parsed.hash}</span>}
+    </div>
+  )
+}
 
 export function ImpactLevelConfig() {
   const [safeConfig, setSafeConfig] = useState({
@@ -31,6 +82,26 @@ export function ImpactLevelConfig() {
     randomization: 90,
   })
 
+  const [configuredEndpoints, setConfiguredEndpoints] = useState<ConfiguredEndpoint[]>([])
+  const [editingEndpoint, setEditingEndpoint] = useState<ConfiguredEndpoint | null>(null)
+
+  useEffect(() => {
+    const stored = localStorage.getItem("configured_endpoints")
+    if (stored) {
+      try {
+        setConfiguredEndpoints(JSON.parse(stored))
+      } catch (error) {
+        console.error("Failed to load configured endpoints:", error)
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    if (configuredEndpoints.length > 0) {
+      localStorage.setItem("configured_endpoints", JSON.stringify(configuredEndpoints))
+    }
+  }, [configuredEndpoints])
+
   const resetToDefaults = (level: string) => {
     switch (level) {
       case "safe":
@@ -45,8 +116,188 @@ export function ImpactLevelConfig() {
     }
   }
 
+  const toggleEndpointActive = (id: number) => {
+    setConfiguredEndpoints((prev) => prev.map((ep) => (ep.id === id ? { ...ep, is_active: !ep.is_active } : ep)))
+    toast.success("Endpoint status updated")
+  }
+
+  const deleteEndpoint = (id: number) => {
+    setConfiguredEndpoints((prev) => prev.filter((ep) => ep.id !== id))
+    localStorage.setItem("configured_endpoints", JSON.stringify(configuredEndpoints.filter((ep) => ep.id !== id)))
+    toast.success("Endpoint removed")
+  }
+
+  const updateEndpoint = (id: number, updates: Partial<ConfiguredEndpoint>) => {
+    setConfiguredEndpoints((prev) => prev.map((ep) => (ep.id === id ? { ...ep, ...updates } : ep)))
+    setEditingEndpoint(null)
+    toast.success("Endpoint updated")
+  }
+
+  const getEndpointTypeBadge = (type: string) => {
+    const config: Record<string, { color: string; label: string }> = {
+      login: { color: "bg-blue-500/20 text-blue-400 border-blue-500/30", label: "Login" },
+      logout: { color: "bg-gray-500/20 text-gray-400 border-gray-500/30", label: "Logout" },
+      post: { color: "bg-green-500/20 text-green-400 border-green-500/30", label: "Post" },
+      tweet: { color: "bg-cyan-500/20 text-cyan-400 border-cyan-500/30", label: "Tweet" },
+      like: { color: "bg-pink-500/20 text-pink-400 border-pink-500/30", label: "Like" },
+      share: { color: "bg-purple-500/20 text-purple-400 border-purple-500/30", label: "Share" },
+      follow: { color: "bg-indigo-500/20 text-indigo-400 border-indigo-500/30", label: "Follow" },
+      comment: { color: "bg-orange-500/20 text-orange-400 border-orange-500/30", label: "Comment" },
+      api: { color: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30", label: "API" },
+    }
+    const { color, label } = config[type] || config.api
+    return (
+      <Badge variant="outline" className={`${color} text-xs`}>
+        <Tag className="h-3 w-3 mr-1" />
+        {label}
+      </Badge>
+    )
+  }
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      <div>
+        <h3 className="text-lg font-semibold mb-2">Endpoint Management</h3>
+        <p className="text-sm text-muted-foreground mb-6">
+          Manage endpoints captured from Playground Reverse Engineering. Configure how they will be used in automation.
+        </p>
+
+        <ThemedCard variant="glass">
+          <ThemedCardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <ThemedCardTitle size="lg" className="flex items-center gap-2">
+                  <Database className="h-5 w-5 text-primary" />
+                  Configured Endpoints
+                </ThemedCardTitle>
+                <ThemedCardDescription>
+                  {configuredEndpoints.length} endpoint(s) configured •{" "}
+                  {configuredEndpoints.filter((e) => e.is_active).length} active
+                </ThemedCardDescription>
+              </div>
+            </div>
+          </ThemedCardHeader>
+          <ThemedCardContent spacing="lg">
+            {configuredEndpoints.length > 0 ? (
+              <div className="space-y-4">
+                {configuredEndpoints.map((endpoint) => (
+                  <div
+                    key={endpoint.id}
+                    className="glass-card border-2 border-primary/30 rounded-lg p-4 space-y-3 hover:border-primary/50 smooth-transition"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1 space-y-2">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <Badge variant="outline" className="text-xs font-mono">
+                            {endpoint.method}
+                          </Badge>
+                          {getEndpointTypeBadge(endpoint.action_type)}
+                          <Badge variant="outline" className="text-xs">
+                            {endpoint.platform}
+                          </Badge>
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                            {endpoint.is_active ? (
+                              <Power className="h-3 w-3 text-green-500" />
+                            ) : (
+                              <PowerOff className="h-3 w-3 text-gray-500" />
+                            )}
+                            {endpoint.is_active ? "Active" : "Inactive"}
+                          </div>
+                        </div>
+
+                        <UrlHighlight url={endpoint.url} />
+
+                        {editingEndpoint?.id === endpoint.id ? (
+                          <div className="space-y-2 pt-2">
+                            <Label className="text-xs">Usage Description</Label>
+                            <Textarea
+                              value={editingEndpoint.usage_description}
+                              onChange={(e) =>
+                                setEditingEndpoint({ ...editingEndpoint, usage_description: e.target.value })
+                              }
+                              placeholder="Describe how this endpoint will be used..."
+                              className="glass-card text-sm"
+                              rows={3}
+                            />
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                onClick={() => updateEndpoint(endpoint.id, editingEndpoint)}
+                                className="bg-primary hover:bg-primary/90"
+                              >
+                                Save
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setEditingEndpoint(null)}
+                                className="glass-card"
+                              >
+                                Cancel
+                              </Button>
+                            </div>
+                          </div>
+                        ) : (
+                          <p className="text-sm text-muted-foreground">{endpoint.usage_description}</p>
+                        )}
+
+                        <div className="flex items-center gap-4 text-xs text-muted-foreground pt-1">
+                          <div className="flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            <span>Configured: {new Date(endpoint.configured_at).toLocaleString()}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col gap-2">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => toggleEndpointActive(endpoint.id)}
+                          className="h-8 w-8 p-0"
+                          title={endpoint.is_active ? "Deactivate" : "Activate"}
+                        >
+                          {endpoint.is_active ? (
+                            <Power className="h-4 w-4 text-green-500" />
+                          ) : (
+                            <PowerOff className="h-4 w-4 text-gray-500" />
+                          )}
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => setEditingEndpoint(endpoint)}
+                          className="h-8 w-8 p-0"
+                          title="Edit"
+                        >
+                          <Edit2 className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => deleteEndpoint(endpoint.id)}
+                          className="h-8 w-8 p-0 hover:text-red-500"
+                          title="Delete"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12 text-muted-foreground">
+                <Database className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                <p className="font-medium">No configured endpoints yet</p>
+                <p className="text-xs mt-1">Move endpoints from Playground → Reverse Engineering → Saved Endpoints</p>
+              </div>
+            )}
+          </ThemedCardContent>
+        </ThemedCard>
+      </div>
+
+      {/* Impact Level Configuration section */}
       <div>
         <h3 className="text-lg font-semibold mb-2">Impact Level Configuration</h3>
         <p className="text-sm text-muted-foreground mb-6">
@@ -54,38 +305,29 @@ export function ImpactLevelConfig() {
         </p>
       </div>
 
-      <Tabs defaultValue="safe" className="space-y-6">
-        <TabsList className="glass-card p-1.5">
-          <TabsTrigger
-            value="safe"
-            className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary data-[state=active]:shadow-[0_0_20px_rgba(239,68,68,0.5)] data-[state=active]:border data-[state=active]:border-primary/50 px-6 py-2.5 font-medium transition-all duration-300"
-          >
+      <ThemedTabs defaultValue="safe" className="space-y-6">
+        <ThemedTabsList variant="glass">
+          <ThemedTabsTrigger value="safe" variant="glow">
             Safe
-          </TabsTrigger>
-          <TabsTrigger
-            value="fast"
-            className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary data-[state=active]:shadow-[0_0_20px_rgba(239,68,68,0.5)] data-[state=active]:border data-[state=active]:border-primary/50 px-6 py-2.5 font-medium transition-all duration-300"
-          >
+          </ThemedTabsTrigger>
+          <ThemedTabsTrigger value="fast" variant="glow">
             Fast
-          </TabsTrigger>
-          <TabsTrigger
-            value="slow-effective"
-            className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary data-[state=active]:shadow-[0_0_20px_rgba(239,68,68,0.5)] data-[state=active]:border data-[state=active]:border-primary/50 px-6 py-2.5 font-medium transition-all duration-300"
-          >
+          </ThemedTabsTrigger>
+          <ThemedTabsTrigger value="slow-effective" variant="glow">
             Slow but Effective
-          </TabsTrigger>
-        </TabsList>
+          </ThemedTabsTrigger>
+        </ThemedTabsList>
 
-        <TabsContent value="safe">
-          <Card className="glass-card">
-            <CardHeader className="gradient-overlay">
-              <CardTitle className="flex items-center gap-2">
+        <ThemedTabsContent value="safe">
+          <ThemedCard variant="glass">
+            <div className="p-6 border-b border-primary/10">
+              <ThemedCardTitle size="lg" className="flex items-center gap-2">
                 <Settings className="h-5 w-5 text-primary" />
                 Safe Mode Configuration
-              </CardTitle>
-              <CardDescription>Longer delays between actions, minimal risk detection</CardDescription>
-            </CardHeader>
-            <CardContent className="pt-6 space-y-6">
+              </ThemedCardTitle>
+              <ThemedCardDescription>Longer delays between actions, minimal risk detection</ThemedCardDescription>
+            </div>
+            <ThemedCardContent spacing="lg">
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label>Minimum Delay Between Actions (seconds)</Label>
@@ -185,20 +427,20 @@ export function ImpactLevelConfig() {
                   Reset to Defaults
                 </Button>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+            </ThemedCardContent>
+          </ThemedCard>
+        </ThemedTabsContent>
 
-        <TabsContent value="fast">
-          <Card className="glass-card">
-            <CardHeader className="gradient-overlay">
-              <CardTitle className="flex items-center gap-2">
+        <ThemedTabsContent value="fast">
+          <ThemedCard variant="glass">
+            <div className="p-6 border-b border-primary/10">
+              <ThemedCardTitle size="lg" className="flex items-center gap-2">
                 <Settings className="h-5 w-5 text-primary" />
                 Fast Mode Configuration
-              </CardTitle>
-              <CardDescription>Moderate speed with balanced safety</CardDescription>
-            </CardHeader>
-            <CardContent className="pt-6 space-y-6">
+              </ThemedCardTitle>
+              <ThemedCardDescription>Moderate speed with balanced safety</ThemedCardDescription>
+            </div>
+            <ThemedCardContent spacing="lg">
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label>Minimum Delay Between Actions (seconds)</Label>
@@ -295,20 +537,20 @@ export function ImpactLevelConfig() {
                   Reset to Defaults
                 </Button>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+            </ThemedCardContent>
+          </ThemedCard>
+        </ThemedTabsContent>
 
-        <TabsContent value="slow-effective">
-          <Card className="glass-card">
-            <CardHeader className="gradient-overlay">
-              <CardTitle className="flex items-center gap-2">
+        <ThemedTabsContent value="slow-effective">
+          <ThemedCard variant="glass">
+            <div className="p-6 border-b border-primary/10">
+              <ThemedCardTitle size="lg" className="flex items-center gap-2">
                 <Settings className="h-5 w-5 text-primary" />
                 Slow but Effective Configuration
-              </CardTitle>
-              <CardDescription>Maximum effectiveness with careful timing</CardDescription>
-            </CardHeader>
-            <CardContent className="pt-6 space-y-6">
+              </ThemedCardTitle>
+              <ThemedCardDescription>Maximum effectiveness with careful timing</ThemedCardDescription>
+            </div>
+            <ThemedCardContent spacing="lg">
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label>Minimum Delay Between Actions (seconds)</Label>
@@ -417,10 +659,10 @@ export function ImpactLevelConfig() {
                   Reset to Defaults
                 </Button>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+            </ThemedCardContent>
+          </ThemedCard>
+        </ThemedTabsContent>
+      </ThemedTabs>
     </div>
   )
 }

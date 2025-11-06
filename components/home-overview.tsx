@@ -1,6 +1,14 @@
 "use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  ThemedCard,
+  ThemedCardContent,
+  ThemedCardDescription,
+  ThemedCardHeader,
+  ThemedCardTitle,
+  StatsCard,
+  ContentCard,
+} from "@/components/ui/themed-card"
 import { Badge } from "@/components/ui/badge"
 import {
   Activity,
@@ -170,100 +178,88 @@ export function HomeOverview({ demoMode }: HomeOverviewProps) {
         {stats.map((stat) => {
           const Icon = stat.icon
           return (
-            <Card key={stat.title}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-                <Icon className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stat.value}</div>
-                <p
-                  className={`text-xs ${
-                    stat.trend === "up"
-                      ? "text-green-600 dark:text-green-400"
-                      : stat.trend === "down"
-                        ? "text-red-600 dark:text-red-400"
-                        : "text-muted-foreground"
-                  }`}
-                >
-                  {stat.change}
-                </p>
-              </CardContent>
-            </Card>
+            <StatsCard
+              key={stat.title}
+              icon={Icon}
+              title={stat.title}
+              value={stat.value}
+              subtitle={stat.change}
+              subtitleClassName={
+                stat.trend === "up"
+                  ? "text-green-600 dark:text-green-400"
+                  : stat.trend === "down"
+                    ? "text-red-600 dark:text-red-400"
+                    : "text-muted-foreground"
+              }
+            />
           )
         })}
       </div>
 
       {/* Recent Activities */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent Activities</CardTitle>
-          <CardDescription>Latest actions performed across all platforms</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {recentActivities.map((activity) => {
-              const Icon = activity.icon
-              return (
-                <div
-                  key={activity.id}
-                  className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-accent/50 transition-colors"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-lg bg-primary/10">
-                      <Icon className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <p className="font-medium">{activity.action}</p>
-                        <Badge variant="outline" className="text-xs">
-                          {activity.platform}
-                        </Badge>
-                      </div>
-                      <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
-                        <span>{activity.accounts} accounts</span>
-                        <span>•</span>
-                        <span>{activity.time}</span>
-                      </div>
-                    </div>
+      <ContentCard title="Recent Activities" description="Latest actions performed across all platforms">
+        <div className="space-y-3">
+          {recentActivities.map((activity) => {
+            const Icon = activity.icon
+            return (
+              <div
+                key={activity.id}
+                className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-accent/50 transition-colors"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="p-2 rounded-lg bg-primary/10">
+                    <Icon className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    {activity.status === "completed" && (
-                      <Badge variant="default" className="gap-1">
-                        <CheckCircle2 className="h-3 w-3" />
-                        Completed
+                    <div className="flex items-center gap-2">
+                      <p className="font-medium">{activity.action}</p>
+                      <Badge variant="outline" className="text-xs">
+                        {activity.platform}
                       </Badge>
-                    )}
-                    {activity.status === "in-progress" && (
-                      <Badge variant="secondary" className="gap-1">
-                        <Activity className="h-3 w-3" />
-                        In Progress
-                      </Badge>
-                    )}
-                    {activity.status === "scheduled" && (
-                      <Badge variant="outline" className="gap-1">
-                        <Clock className="h-3 w-3" />
-                        Scheduled
-                      </Badge>
-                    )}
+                    </div>
+                    <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
+                      <span>{activity.accounts} accounts</span>
+                      <span>•</span>
+                      <span>{activity.time}</span>
+                    </div>
                   </div>
                 </div>
-              )
-            })}
-          </div>
-        </CardContent>
-      </Card>
+                <div>
+                  {activity.status === "completed" && (
+                    <Badge variant="default" className="gap-1">
+                      <CheckCircle2 className="h-3 w-3" />
+                      Completed
+                    </Badge>
+                  )}
+                  {activity.status === "in-progress" && (
+                    <Badge variant="secondary" className="gap-1">
+                      <Activity className="h-3 w-3" />
+                      In Progress
+                    </Badge>
+                  )}
+                  {activity.status === "scheduled" && (
+                    <Badge variant="outline" className="gap-1">
+                      <Clock className="h-3 w-3" />
+                      Scheduled
+                    </Badge>
+                  )}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </ContentCard>
 
       {/* Targeted Accounts Status */}
-      <Card className="border-glow-red">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+      <ThemedCard variant="glow">
+        <ThemedCardHeader>
+          <ThemedCardTitle size="lg" className="flex items-center gap-2">
             <Target className="h-5 w-5 text-primary" />
             Targeted Accounts Status
-          </CardTitle>
-          <CardDescription>Current status of accounts under attack operations</CardDescription>
-        </CardHeader>
-        <CardContent>
+          </ThemedCardTitle>
+          <ThemedCardDescription>Current status of accounts under attack operations</ThemedCardDescription>
+        </ThemedCardHeader>
+        <ThemedCardContent>
           <div className="space-y-3">
             {targetedAccounts.map((account) => (
               <div
@@ -323,65 +319,59 @@ export function HomeOverview({ demoMode }: HomeOverviewProps) {
               </div>
             ))}
           </div>
-        </CardContent>
-      </Card>
+        </ThemedCardContent>
+      </ThemedCard>
 
       {/* Upcoming Actions */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Upcoming Actions</CardTitle>
-          <CardDescription>Scheduled actions for the next 24 hours</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-4 border border-border rounded-lg">
-              <div className="flex items-center gap-4">
-                <div className="p-2 rounded-lg bg-blue-500/10">
-                  <Send className="h-5 w-5 text-blue-500" />
-                </div>
-                <div>
-                  <p className="font-medium">Post scheduled tweets</p>
-                  <p className="text-sm text-muted-foreground">15 accounts • Today at 3:00 PM</p>
-                </div>
+      <ContentCard title="Upcoming Actions" description="Scheduled actions for the next 24 hours">
+        <div className="space-y-3">
+          <div className="flex items-center justify-between p-4 border border-border rounded-lg">
+            <div className="flex items-center gap-4">
+              <div className="p-2 rounded-lg bg-blue-500/10">
+                <Send className="h-5 w-5 text-blue-500" />
               </div>
-              <Badge variant="outline">
-                <Clock className="h-3 w-3 mr-1" />
-                In 2 hours
-              </Badge>
-            </div>
-            <div className="flex items-center justify-between p-4 border border-border rounded-lg">
-              <div className="flex items-center gap-4">
-                <div className="p-2 rounded-lg bg-pink-500/10">
-                  <Heart className="h-5 w-5 text-pink-500" />
-                </div>
-                <div>
-                  <p className="font-medium">Like trending posts</p>
-                  <p className="text-sm text-muted-foreground">8 accounts • Today at 6:00 PM</p>
-                </div>
+              <div>
+                <p className="font-medium">Post scheduled tweets</p>
+                <p className="text-sm text-muted-foreground">15 accounts • Today at 3:00 PM</p>
               </div>
-              <Badge variant="outline">
-                <Clock className="h-3 w-3 mr-1" />
-                In 5 hours
-              </Badge>
             </div>
-            <div className="flex items-center justify-between p-4 border border-border rounded-lg">
-              <div className="flex items-center gap-4">
-                <div className="p-2 rounded-lg bg-green-500/10">
-                  <UserPlus className="h-5 w-5 text-green-500" />
-                </div>
-                <div>
-                  <p className="font-medium">Follow target users</p>
-                  <p className="text-sm text-muted-foreground">12 accounts • Tomorrow at 9:00 AM</p>
-                </div>
-              </div>
-              <Badge variant="outline">
-                <Clock className="h-3 w-3 mr-1" />
-                In 18 hours
-              </Badge>
-            </div>
+            <Badge variant="outline">
+              <Clock className="h-3 w-3 mr-1" />
+              In 2 hours
+            </Badge>
           </div>
-        </CardContent>
-      </Card>
+          <div className="flex items-center justify-between p-4 border border-border rounded-lg">
+            <div className="flex items-center gap-4">
+              <div className="p-2 rounded-lg bg-pink-500/10">
+                <Heart className="h-5 w-5 text-pink-500" />
+              </div>
+              <div>
+                <p className="font-medium">Like trending posts</p>
+                <p className="text-sm text-muted-foreground">8 accounts • Today at 6:00 PM</p>
+              </div>
+            </div>
+            <Badge variant="outline">
+              <Clock className="h-3 w-3 mr-1" />
+              In 5 hours
+            </Badge>
+          </div>
+          <div className="flex items-center justify-between p-4 border border-border rounded-lg">
+            <div className="flex items-center gap-4">
+              <div className="p-2 rounded-lg bg-green-500/10">
+                <UserPlus className="h-5 w-5 text-green-500" />
+              </div>
+              <div>
+                <p className="font-medium">Follow target users</p>
+                <p className="text-sm text-muted-foreground">12 accounts • Tomorrow at 9:00 AM</p>
+              </div>
+            </div>
+            <Badge variant="outline">
+              <Clock className="h-3 w-3 mr-1" />
+              In 18 hours
+            </Badge>
+          </div>
+        </div>
+      </ContentCard>
     </div>
   )
 }

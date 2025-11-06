@@ -210,7 +210,8 @@
   .glass-card {
     background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(239, 68, 68, 0.1);
   }
 
   /* Subtle gradient overlay for depth */
@@ -229,7 +230,7 @@
 
   /* Modern card elevation */
   .elevated-card {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(239, 68, 68, 0.1);
+    box-shadow: 0 8px 16px -2px rgba(0, 0, 0, 0.4), 0 4px 8px -2px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(239, 68, 68, 0.2);
   }
 
   /* Animated border glow */
@@ -277,5 +278,32 @@
   .custom-scrollbar {
     scrollbar-width: thin;
     scrollbar-color: oklch(0.15 0.015 25) oklch(0.04 0 0);
+  }
+
+  /* Tab glow effects - centrally managed */
+  .tab-glow-active {
+    box-shadow: 0 0 25px rgba(239, 68, 68, 0.6), 0 0 50px rgba(239, 68, 68, 0.4), 0 4px 12px rgba(0, 0, 0, 0.4);
+    border: 2px solid rgba(239, 68, 68, 0.7);
+    background: rgba(239, 68, 68, 0.25);
+    color: oklch(0.55 0.26 25);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .tab-glow-hover {
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .tab-glow-hover:hover {
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.4), 0 0 40px rgba(239, 68, 68, 0.2);
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+  }
+
+  /* Icon tab glow - for tabs with icons */
+  .icon-tab-glow-active {
+    box-shadow: 0 0 25px rgba(239, 68, 68, 0.6), 0 0 50px rgba(239, 68, 68, 0.4);
+    background: rgba(239, 68, 68, 0.2);
+    border: 2px solid rgba(239, 68, 68, 0.6);
   }
 }

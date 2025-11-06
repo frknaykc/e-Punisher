@@ -1,13 +1,22 @@
 "use client"
 
+import { SelectItem, SelectContent, SelectValue, SelectTrigger } from "@/components/ui/select"
+import { Select } from "@/components/ui/select"
 import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  ThemedCard,
+  ThemedCardHeader,
+  ThemedCardTitle,
+  ThemedCardDescription,
+  ThemedCardContent,
+  StatsCard,
+  SessionCard,
+} from "@/components/ui/themed-card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { ThemedTabs, ThemedTabsList, ThemedTabsTrigger, ThemedTabsContent } from "@/components/ui/themed-tabs"
 import {
   Twitter,
   Instagram,
@@ -88,20 +97,20 @@ export function ESentinel({ demoMode = true }: ESentinelProps) {
     <div className="space-y-6">
       <div></div>
 
-      <Tabs defaultValue="monitors" className="space-y-6">
-        <TabsList className="glass-card border border-primary/20">
-          <TabsTrigger value="monitors" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
+      <ThemedTabs defaultValue="monitors" className="space-y-6">
+        <ThemedTabsList variant="glass">
+          <ThemedTabsTrigger value="monitors" variant="glow">
             Active Monitors
-          </TabsTrigger>
-          <TabsTrigger value="create" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
+          </ThemedTabsTrigger>
+          <ThemedTabsTrigger value="create" variant="glow">
             Create Monitor
-          </TabsTrigger>
-          <TabsTrigger value="alerts" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
+          </ThemedTabsTrigger>
+          <ThemedTabsTrigger value="alerts" variant="glow">
             Alerts
-          </TabsTrigger>
-        </TabsList>
+          </ThemedTabsTrigger>
+        </ThemedTabsList>
 
-        <TabsContent value="monitors" className="space-y-6">
+        <ThemedTabsContent value="monitors" className="space-y-6">
           {!demoMode ? (
             <div className="flex flex-col items-center justify-center h-[60vh] space-y-4">
               <div className="p-6 rounded-full bg-muted">
@@ -117,59 +126,32 @@ export function ESentinel({ demoMode = true }: ESentinelProps) {
           ) : (
             <>
               <div className="grid gap-6 md:grid-cols-4">
-                <Card className="glass-card hover-glow-red smooth-transition">
-                  <CardHeader className="gradient-overlay pb-3">
-                    <Shield className="h-8 w-8 text-primary mb-2" />
-                    <CardTitle className="text-2xl">{monitors.length}</CardTitle>
-                    <CardDescription>Active Monitors</CardDescription>
-                  </CardHeader>
-                </Card>
-
-                <Card className="glass-card hover-glow-red smooth-transition">
-                  <CardHeader className="gradient-overlay pb-3">
-                    <Eye className="h-8 w-8 text-primary mb-2" />
-                    <CardTitle className="text-2xl">24/7</CardTitle>
-                    <CardDescription>Real-time Tracking</CardDescription>
-                  </CardHeader>
-                </Card>
-
-                <Card className="glass-card hover-glow-red smooth-transition">
-                  <CardHeader className="gradient-overlay pb-3">
-                    <AlertTriangle className="h-8 w-8 text-primary mb-2" />
-                    <CardTitle className="text-2xl">85</CardTitle>
-                    <CardDescription>Total Alerts</CardDescription>
-                  </CardHeader>
-                </Card>
-
-                <Card className="glass-card hover-glow-red smooth-transition">
-                  <CardHeader className="gradient-overlay pb-3">
-                    <TrendingUp className="h-8 w-8 text-primary mb-2" />
-                    <CardTitle className="text-2xl">+32%</CardTitle>
-                    <CardDescription>Activity Increase</CardDescription>
-                  </CardHeader>
-                </Card>
+                <StatsCard icon={Shield} value={monitors.length.toString()} label="Active Monitors" />
+                <StatsCard icon={Eye} value="24/7" label="Real-time Tracking" />
+                <StatsCard icon={AlertTriangle} value="85" label="Total Alerts" />
+                <StatsCard icon={TrendingUp} value="+32%" label="Activity Increase" />
               </div>
 
               <div className="space-y-4">
                 {monitors.map((monitor) => {
                   const Icon = platformIcons[monitor.platform]
                   return (
-                    <Card key={monitor.id} className="glass-card hover-glow-red smooth-transition">
-                      <CardHeader className="gradient-overlay">
+                    <ThemedCard key={monitor.id} variant="glass">
+                      <ThemedCardHeader>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
                             <Icon className="h-5 w-5 text-primary" />
                             <div>
-                              <CardTitle className="text-lg">{monitor.name}</CardTitle>
-                              <CardDescription className="capitalize">
+                              <ThemedCardTitle size="lg">{monitor.name}</ThemedCardTitle>
+                              <ThemedCardDescription className="capitalize">
                                 {monitor.platform} • {monitorTypes[monitor.type]}
-                              </CardDescription>
+                              </ThemedCardDescription>
                             </div>
                           </div>
                           <Badge>{monitor.status}</Badge>
                         </div>
-                      </CardHeader>
-                      <CardContent className="pt-6">
+                      </ThemedCardHeader>
+                      <ThemedCardContent>
                         <div className="flex items-center justify-between">
                           <div className="space-y-1">
                             <p className="text-sm text-muted-foreground">Target: {monitor.target}</p>
@@ -183,22 +165,22 @@ export function ESentinel({ demoMode = true }: ESentinelProps) {
                             View Details
                           </Button>
                         </div>
-                      </CardContent>
-                    </Card>
+                      </ThemedCardContent>
+                    </ThemedCard>
                   )
                 })}
               </div>
             </>
           )}
-        </TabsContent>
+        </ThemedTabsContent>
 
-        <TabsContent value="create" className="space-y-6">
-          <Card className="glass-card">
-            <CardHeader className="gradient-overlay">
-              <CardTitle>Create New Monitor</CardTitle>
-              <CardDescription>Set up real-time monitoring for social media activity</CardDescription>
-            </CardHeader>
-            <CardContent className="pt-6 space-y-6">
+        <ThemedTabsContent value="create" className="space-y-6">
+          <SessionCard>
+            <ThemedCardHeader>
+              <ThemedCardTitle size="xl">Create New Monitor</ThemedCardTitle>
+              <ThemedCardDescription>Set up real-time monitoring for social media activity</ThemedCardDescription>
+            </ThemedCardHeader>
+            <ThemedCardContent spacing="lg">
               <div className="grid gap-6 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label>Select Platform</Label>
@@ -298,17 +280,17 @@ export function ESentinel({ demoMode = true }: ESentinelProps) {
                 <Plus className="h-4 w-4" />
                 Create Monitor
               </Button>
-            </CardContent>
-          </Card>
-        </TabsContent>
+            </ThemedCardContent>
+          </SessionCard>
+        </ThemedTabsContent>
 
-        <TabsContent value="alerts" className="space-y-4">
-          <Card className="glass-card">
-            <CardHeader className="gradient-overlay">
-              <CardTitle>Recent Alerts</CardTitle>
-              <CardDescription>Latest activity detected by your monitors</CardDescription>
-            </CardHeader>
-            <CardContent className="pt-6 space-y-3">
+        <ThemedTabsContent value="alerts" className="space-y-4">
+          <ThemedCard variant="glass">
+            <ThemedCardHeader>
+              <ThemedCardTitle size="lg">Recent Alerts</ThemedCardTitle>
+              <ThemedCardDescription>Latest activity detected by your monitors</ThemedCardDescription>
+            </ThemedCardHeader>
+            <ThemedCardContent spacing="lg">
               {[1, 2, 3, 4, 5].map((i) => (
                 <div key={i} className="p-4 border border-border rounded-lg hover:bg-accent/50 smooth-transition">
                   <div className="flex items-start justify-between mb-2">
@@ -330,10 +312,10 @@ export function ESentinel({ demoMode = true }: ESentinelProps) {
                   </div>
                 </div>
               ))}
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+            </ThemedCardContent>
+          </ThemedCard>
+        </ThemedTabsContent>
+      </ThemedTabs>
     </div>
   )
 }
