@@ -41,6 +41,7 @@ import {
   Search,
   Rss,
   ArrowRight,
+  Clock,
 } from "lucide-react"
 import { toast } from "sonner"
 import { apiClient, type PlaygroundStatusResponse, type CapturedEndpoint } from "@/lib/api-client"
@@ -342,7 +343,16 @@ export function PlaygroundReverseEngineering({ demoMode }: PlaygroundReverseEngi
       // Backend otomatik olarak captured_requests'leri parse edip endpoint'lere dönüştürür
       const result = await apiClient.savePlaygroundEndpoints(sessionId)
 
-      toast.success(`${result.saved_count} endpoints saved successfully!`)
+      // Detaylı istatistikler ile toast göster
+      const stats = result.statistics
+      if (stats) {
+        toast.success(`💾 ${result.saved_count} unique endpoints saved!`, {
+          description: `Total Captured: ${stats.total_captured} | Duplicates: ${stats.duplicates_filtered} | Static Assets: ${stats.static_assets_filtered}`,
+        })
+      } else {
+        toast.success(`${result.saved_count} endpoints saved successfully!`)
+      }
+      
       loadSavedEndpoints()
     } catch (error: any) {
       toast.error("Failed to save endpoints", {
@@ -485,13 +495,16 @@ const response = await fetch("${endpoint.url}", {
               {/* Manual Actions */}
               {isRecording && (
                 <div className="space-y-2 pt-4 border-t">
-                  <Label className="text-xs text-muted-foreground">Record Manual Actions:</Label>
+                  <Label className="text-xs text-muted-foreground">
+                    Label Endpoints (Click after performing action):
+                  </Label>
                   <div className="grid grid-cols-2 gap-2">
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => handleRecordAction("login")}
                       className="hover:bg-primary/10 hover:border-primary hover:text-primary active:scale-95 transition-all duration-150"
+                      title="Mark recent endpoints as 'login' action"
                     >
                       🔐 Login
                     </Button>
@@ -500,6 +513,7 @@ const response = await fetch("${endpoint.url}", {
                       size="sm"
                       onClick={() => handleRecordAction("post")}
                       className="hover:bg-primary/10 hover:border-primary hover:text-primary active:scale-95 transition-all duration-150"
+                      title="Mark recent endpoints as 'post' action"
                     >
                       📝 Post
                     </Button>
@@ -508,6 +522,7 @@ const response = await fetch("${endpoint.url}", {
                       size="sm"
                       onClick={() => handleRecordAction("like")}
                       className="hover:bg-primary/10 hover:border-primary hover:text-primary active:scale-95 transition-all duration-150"
+                      title="Mark recent endpoints as 'like' action"
                     >
                       ❤️ Like
                     </Button>
@@ -516,8 +531,45 @@ const response = await fetch("${endpoint.url}", {
                       size="sm"
                       onClick={() => handleRecordAction("retweet")}
                       className="hover:bg-primary/10 hover:border-primary hover:text-primary active:scale-95 transition-all duration-150"
+                      title="Mark recent endpoints as 'share/retweet' action"
                     >
                       🔁 Share
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleRecordAction("follow")}
+                      className="hover:bg-primary/10 hover:border-primary hover:text-primary active:scale-95 transition-all duration-150"
+                      title="Mark recent endpoints as 'follow' action"
+                    >
+                      ➕ Follow
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleRecordAction("bookmark")}
+                      className="hover:bg-primary/10 hover:border-primary hover:text-primary active:scale-95 transition-all duration-150"
+                      title="Mark recent endpoints as 'bookmark' action"
+                    >
+                      🔖 Bookmark
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleRecordAction("block")}
+                      className="hover:bg-primary/10 hover:border-primary hover:text-primary active:scale-95 transition-all duration-150"
+                      title="Mark recent endpoints as 'block' action"
+                    >
+                      🚫 Block
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleRecordAction("report")}
+                      className="hover:bg-primary/10 hover:border-primary hover:text-primary active:scale-95 transition-all duration-150"
+                      title="Mark recent endpoints as 'report' action"
+                    >
+                      ⚠️ Report
                     </Button>
                   </div>
                 </div>
@@ -525,9 +577,15 @@ const response = await fetch("${endpoint.url}", {
 
               {/* Save Button */}
               {sessionStatus && sessionStatus.captured_endpoints_count > 0 && (
-                <Button onClick={handleSaveEndpoints} disabled={isLoading} variant="secondary" className="w-full">
+                <Button 
+                  onClick={handleSaveEndpoints} 
+                  disabled={isLoading} 
+                  variant="secondary" 
+                  className="w-full"
+                  title="Save all captured endpoints (marked and unmarked)"
+                >
                   <Save className="mr-2 h-4 w-4" />
-                  Save {sessionStatus.captured_endpoints_count} Endpoints
+                  Save All Endpoints ({sessionStatus.captured_endpoints_count})
                 </Button>
               )}
             </ThemedCardContent>
@@ -619,7 +677,7 @@ const response = await fetch("${endpoint.url}", {
                                 className="p-4 rounded-lg bg-primary/10 border-2 border-primary/30 hover:border-primary/50 transition-colors"
                               >
                                 <div className="flex items-start gap-3">
-                                  <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                                  <CheckCircle2 className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                                   <div className="flex-1 space-y-2">
                                     <div className="flex items-center gap-2 flex-wrap">
                                       <span className="font-semibold text-primary uppercase text-sm">
@@ -683,9 +741,9 @@ const response = await fetch("${endpoint.url}", {
                               <div key={`log-${idx}`} className="p-3 rounded-lg bg-background/50 border border-border">
                                 <div className="flex items-start gap-2">
                                   {log.level === "error" ? (
-                                    <AlertCircle className="h-4 w-4 text-destructive flex-shrink-0 mt-0.5" />
+                                    <AlertCircle className="h-4 w-4 text-destructive shrink-0 mt-0.5" />
                                   ) : (
-                                    <CheckCircle2 className="h-4 w-4 text-success flex-shrink-0 mt-0.5" />
+                                    <CheckCircle2 className="h-4 w-4 text-success shrink-0 mt-0.5" />
                                   )}
                                   <div className="flex-1">
                                     <div className="flex items-center gap-2 mb-1">
@@ -752,16 +810,60 @@ const response = await fetch("${endpoint.url}", {
                             className="p-4 rounded-lg border-2 border-border hover:border-primary/50 transition-colors bg-background/50"
                           >
                             <div className="flex items-start justify-between gap-4 mb-3">
-                              <div className="flex items-center gap-2 flex-wrap">
-                                <MethodBadge method={endpoint.method} />
-                                <Badge className={`text-xs ${getEndpointColor(endpointType)}`}>
-                                  <EndpointIcon className="h-3 w-3 mr-1" />
-                                  {endpointType}
-                                </Badge>
-                                <span className="font-medium capitalize text-sm">{endpoint.action_type}</span>
-                                <Badge variant="secondary" className="text-xs">
-                                  {endpoint.platform}
-                                </Badge>
+                              <div className="flex flex-col gap-2">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <MethodBadge method={endpoint.method} />
+                                  {/* Action Type Badge - ÖNEMLİ! */}
+                                  <Badge className={`text-xs font-bold border-2 ${
+                                    endpoint.action_type === 'login' ? 'bg-blue-500/20 text-blue-600 border-blue-500' :
+                                    endpoint.action_type === 'post' ? 'bg-green-500/20 text-green-600 border-green-500' :
+                                    endpoint.action_type === 'reply' ? 'bg-green-400/20 text-green-500 border-green-400' :
+                                    endpoint.action_type === 'like' ? 'bg-pink-500/20 text-pink-600 border-pink-500' :
+                                    endpoint.action_type === 'unlike' ? 'bg-pink-400/20 text-pink-500 border-pink-400' :
+                                    endpoint.action_type === 'retweet' ? 'bg-purple-500/20 text-purple-600 border-purple-500' :
+                                    endpoint.action_type === 'unretweet' ? 'bg-purple-400/20 text-purple-500 border-purple-400' :
+                                    endpoint.action_type === 'follow' ? 'bg-indigo-500/20 text-indigo-600 border-indigo-500' :
+                                    endpoint.action_type === 'unfollow' ? 'bg-indigo-400/20 text-indigo-500 border-indigo-400' :
+                                    endpoint.action_type === 'bookmark' ? 'bg-yellow-500/20 text-yellow-600 border-yellow-500' :
+                                    endpoint.action_type === 'block' ? 'bg-red-500/20 text-red-600 border-red-500' :
+                                    endpoint.action_type === 'unblock' ? 'bg-red-400/20 text-red-500 border-red-400' :
+                                    endpoint.action_type === 'report' ? 'bg-orange-600/20 text-orange-700 border-orange-600' :
+                                    endpoint.action_type === 'mute' ? 'bg-gray-600/20 text-gray-700 border-gray-600' :
+                                    endpoint.action_type === 'delete' ? 'bg-red-500/20 text-red-600 border-red-500' :
+                                    endpoint.action_type === 'feed' ? 'bg-orange-500/20 text-orange-600 border-orange-500' :
+                                    endpoint.action_type === 'profile' ? 'bg-cyan-500/20 text-cyan-600 border-cyan-500' :
+                                    'bg-gray-500/20 text-gray-600 border-gray-500'
+                                  }`}>
+                                    {endpoint.action_type === 'login' && '🔐 '}
+                                    {endpoint.action_type === 'post' && '✍️ '}
+                                    {endpoint.action_type === 'reply' && '💬 '}
+                                    {endpoint.action_type === 'like' && '❤️ '}
+                                    {endpoint.action_type === 'unlike' && '💔 '}
+                                    {endpoint.action_type === 'retweet' && '🔁 '}
+                                    {endpoint.action_type === 'unretweet' && '↩️ '}
+                                    {endpoint.action_type === 'follow' && '➕ '}
+                                    {endpoint.action_type === 'unfollow' && '➖ '}
+                                    {endpoint.action_type === 'bookmark' && '🔖 '}
+                                    {endpoint.action_type === 'block' && '🚫 '}
+                                    {endpoint.action_type === 'unblock' && '✅ '}
+                                    {endpoint.action_type === 'report' && '⚠️ '}
+                                    {endpoint.action_type === 'mute' && '🔇 '}
+                                    {endpoint.action_type === 'delete' && '🗑️ '}
+                                    {endpoint.action_type === 'feed' && '📰 '}
+                                    {endpoint.action_type === 'profile' && '👤 '}
+                                    {endpoint.action_type === 'other' && '📡 '}
+                                    <span className="uppercase">{endpoint.action_type}</span>
+                                  </Badge>
+                                  <Badge variant="secondary" className="text-xs">
+                                    {endpoint.platform}
+                                  </Badge>
+                                </div>
+                                {endpoint.captured_at && (
+                                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                    <Clock className="h-3 w-3" />
+                                    <span>Captured: {new Date(endpoint.captured_at).toLocaleString()}</span>
+                                  </div>
+                                )}
                               </div>
                               <div className="flex items-center gap-1">
                                 <Button

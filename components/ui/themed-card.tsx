@@ -89,7 +89,47 @@ export function SessionCard({ className, children, ...props }: React.ComponentPr
 }
 
 // Specialized card for stats/metrics
-export function StatsCard({ className, children, ...props }: React.ComponentProps<typeof Card>) {
+export function StatsCard({
+  className,
+  children,
+  icon,
+  title,
+  value,
+  subtitle,
+  subtitleClassName,
+  ...props
+}: React.ComponentProps<typeof Card> & {
+  icon?: React.ComponentType<{ className?: string }>
+  title?: string
+  value?: string | number
+  subtitle?: string
+  subtitleClassName?: string
+}) {
+  // If icon, title, value, subtitle are provided, render structured content
+  if (title !== undefined || value !== undefined) {
+    const Icon = icon
+    return (
+      <ThemedCard
+        variant="glass"
+        className={cn("border-2 border-primary/40 hover:border-primary/60 transition-all duration-300", className)}
+        {...props}
+      >
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
+            {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">{value}</div>
+          {subtitle && <p className={cn("text-xs mt-1", subtitleClassName)}>{subtitle}</p>}
+          {children}
+        </CardContent>
+      </ThemedCard>
+    )
+  }
+
+  // Otherwise, render as a simple themed card
   return (
     <ThemedCard
       variant="glass"

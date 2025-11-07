@@ -95,6 +95,91 @@ export interface CapturedEndpointsResponse {
   total: number;
 }
 
+export interface PlaygroundSaveResponse {
+  message: string;
+  saved_count: number;
+  statistics?: {
+    total_captured: number;
+    saved: number;
+    duplicates_filtered: number;
+    static_assets_filtered: number;
+  };
+}
+
+// Scraper interfaces
+export interface ScrapeRequest {
+  url: string;
+  format: "markdown" | "json" | "html" | "text" | "csv";
+  options?: Record<string, any>;
+}
+
+export interface ScrapeResponse {
+  url: string;
+  format: string;
+  content: string;
+  metadata: {
+    title: string;
+    links_count: number;
+    headings_count: number;
+    images_count: number;
+    content_length: number;
+  };
+  scraped_at: string;
+  session_id?: number;
+}
+
+export interface ScrapingSession {
+  id: number;
+  url: string;
+  title?: string;
+  format: string;
+  content?: string;
+  metadata?: Record<string, any>;
+  template_id?: number;
+  template_name?: string;
+  status: string;
+  error_message?: string;
+  scraped_at: string;
+  applied_filters?: Record<string, any>;
+}
+
+export interface ScrapingSessionListResponse {
+  sessions: ScrapingSession[];
+  total: number;
+}
+
+export interface ScrapingTemplate {
+  id: number;
+  name: string;
+  description?: string;
+  target_domain?: string;
+  format: string;
+  css_selectors?: Record<string, any>;
+  keyword_filters?: Record<string, any>;
+  element_filters?: Record<string, any>;
+  extract_rules?: Record<string, any>;
+  is_active: boolean;
+  usage_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ScrapingTemplateListResponse {
+  templates: ScrapingTemplate[];
+  total: number;
+}
+
+export interface ScrapingTemplateCreate {
+  name: string;
+  description?: string;
+  target_domain?: string;
+  format: string;
+  css_selectors?: Record<string, any>;
+  keyword_filters?: Record<string, any>;
+  element_filters?: Record<string, any>;
+  extract_rules?: Record<string, any>;
+}
+
 export interface Account {
   id: number;
   platform: string;
@@ -378,8 +463,8 @@ class ApiClient {
   /**
    * Endpoint'leri kaydet (otomatik parse)
    */
-  async savePlaygroundEndpoints(sessionId: string): Promise<any> {
-    return this.request<any>(`/playground/${sessionId}/save`, {
+  async savePlaygroundEndpoints(sessionId: string): Promise<PlaygroundSaveResponse> {
+    return this.request<PlaygroundSaveResponse>(`/playground/${sessionId}/save`, {
       method: "POST",
     });
   }
@@ -405,7 +490,7 @@ class ApiClient {
     if (actionType) params.append("action_type", actionType);
 
     const query = params.toString() ? `?${params.toString()}` : "";
-    return this.request<CapturedEndpointsResponse>(`/playground/endpoints/${query}`);
+    return this.request<CapturedEndpointsResponse>(`/playground/endpoints${query}`);
   }
 
   /**
@@ -413,6 +498,87 @@ class ApiClient {
    */
   async deleteCapturedEndpoint(endpointId: number): Promise<any> {
     return this.request<any>(`/playground/endpoints/${endpointId}`, {
+      method: "DELETE",
+    });
+  }
+
+  // ===== Scraper Metodları =====
+
+  /**
+   * Web sitesini scrape et
+   */
+  async scrapeWebsite(request: ScrapeRequest): Promise<ScrapeResponse> {
+    return this.request<ScrapeResponse>("/scraper/scrape", {
+      method: "POST",
+      body: JSON.stringify(request),
+    });
+  }
+
+  /**
+   * Scraping sessions listele
+   */
+  async getScrapingSessions(skip: number = 0, limit: number = 50): Promise<ScrapingSessionListResponse> {
+    return this.request<ScrapingSessionListResponse>(`/scraper/sessions?skip=${skip}&limit=${limit}`);
+  }
+
+  /**
+   * Specific scraping session getir
+   */
+  async getScrapingSession(sessionId: number): Promise<ScrapingSession> {
+    return this.request<ScrapingSession>(`/scraper/sessions/${sessionId}`);
+  }
+
+  /**
+   * Scraping session sil
+   */
+  async deleteScrapingSession(sessionId: number): Promise<{ message: string }> {
+    return this.request<{ message: string }>(`/scraper/sessions/${sessionId}`, {
+      method: "DELETE",
+    });
+  }
+
+  /**
+   * Scraping templates listele
+   */
+  async getScrapingTemplates(skip: number = 0, limit: number = 50): Promise<ScrapingTemplateListResponse> {
+    return this.request<ScrapingTemplateListResponse>(`/scraper/templates?skip=${skip}&limit=${limit}`);
+  }
+
+  /**
+   * Scraping template oluştur
+   */
+  async createScrapingTemplate(template: ScrapingTemplateCreate): Promise<ScrapingTemplate> {
+    return this.request<ScrapingTemplate>("/scraper/templates", {
+      method: "POST",
+      body: JSON.stringify(template),
+    });
+  }
+
+  /**
+   * Scraping template getir
+   */
+  async getScrapingTemplate(templateId: number): Promise<ScrapingTemplate> {
+    return this.request<ScrapingTemplate>(`/scraper/templates/${templateId}`);
+  }
+
+  /**
+   * Scraping template güncelle
+   */
+  async updateScrapingTemplate(
+    templateId: number,
+    updates: Partial<ScrapingTemplateCreate>
+  ): Promise<ScrapingTemplate> {
+    return this.request<ScrapingTemplate>(`/scraper/templates/${templateId}`, {
+      method: "PUT",
+      body: JSON.stringify(updates),
+    });
+  }
+
+  /**
+   * Scraping template sil
+   */
+  async deleteScrapingTemplate(templateId: number): Promise<{ message: string }> {
+    return this.request<{ message: string }>(`/scraper/templates/${templateId}`, {
       method: "DELETE",
     });
   }

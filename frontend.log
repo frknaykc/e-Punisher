@@ -1,0 +1,33 @@
+
+> my-v0-project@0.1.0 dev
+> next dev
+
+ ⚠ `eslint` configuration in next.config.mjs is no longer supported. See more info here: https://nextjs.org/docs/app/api-reference/cli/next#next-lint-options
+ ⚠ Invalid next.config.mjs options detected: 
+ ⚠     Unrecognized key(s) in object: 'eslint'
+ ⚠ See more info here: https://nextjs.org/docs/messages/invalid-next-config
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /Users/furkana/pnpm-lock.yaml as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * /Users/furkana/Desktop/E-Punisher/frontend/pnpm-lock.yaml
+
+   ▲ Next.js 16.0.0 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://172.16.20.46:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 1178ms
+ ○ Compiling / ...
+ GET / 200 in 4.8s (compile: 4.4s, render: 421ms)
+ GET / 200 in 127ms (compile: 8ms, render: 119ms)
+ GET / 200 in 317ms (compile: 5ms, render: 312ms)
+ GET / 200 in 150ms (compile: 7ms, render: 143ms)
+ ✓ Compiled in 118ms
+ ✓ Compiled in 75ms
+ ✓ Compiled in 106ms
+ ✓ Compiled in 246ms
+ ✓ Compiled in 200ms
+ GET / 200 in 650ms (compile: 196ms, render: 454ms)
