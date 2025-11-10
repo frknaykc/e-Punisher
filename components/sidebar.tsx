@@ -55,6 +55,7 @@ interface SidebarProps {
       | "configuration", // Added configuration to type
   ) => void
   onSettingsClick: () => void
+  onLogout: () => void // Added logout handler prop
   isExpanded: boolean
   onExpandedChange: (expanded: boolean) => void
 }
@@ -63,6 +64,7 @@ export function Sidebar({
   selectedPlatform,
   onSelectPlatform,
   onSettingsClick,
+  onLogout, // Destructure logout handler
   isExpanded,
   onExpandedChange,
 }: SidebarProps) {
@@ -266,7 +268,10 @@ export function Sidebar({
             <Settings className="h-5 w-5 flex-shrink-0" />
             {isExpanded && <span className="whitespace-nowrap">Settings</span>}
           </button>
-          <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-sidebar-foreground/70 hover:bg-destructive hover:text-destructive-foreground hover:glow-red-sm transition-all duration-300 smooth-transition">
+          <button
+            onClick={onLogout}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-sidebar-foreground/70 hover:bg-destructive hover:text-destructive-foreground hover:glow-red-sm transition-all duration-300 smooth-transition"
+          >
             <LogOut className="h-5 w-5 flex-shrink-0" />
             {isExpanded && <span className="whitespace-nowrap">Logout</span>}
           </button>

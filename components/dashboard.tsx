@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Users, Search } from "lucide-react"
 import { ImpactLevelConfig } from "@/components/settings/impact-level-config"
+import { useAuth } from "@/components/auth-provider"
 
 export type Platform = "twitter" | "instagram" | "linkedin" | "google" | "tiktok" | "facebook"
 
@@ -51,6 +52,7 @@ export function Dashboard() {
     return true
   })
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false)
+  const { logout } = useAuth()
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -119,6 +121,7 @@ export function Dashboard() {
         selectedPlatform={selectedPlatform}
         onSelectPlatform={setSelectedPlatform}
         onSettingsClick={() => setIsSettingsOpen(!isSettingsOpen)}
+        onLogout={logout}
         isExpanded={isSidebarExpanded}
         onExpandedChange={setIsSidebarExpanded}
       />

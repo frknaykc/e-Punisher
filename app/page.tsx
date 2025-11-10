@@ -1,5 +1,12 @@
+"use client"
+
 import { Dashboard } from "@/components/dashboard"
+import { AuthProvider } from "@/components/auth-provider"
 
 export default function Home() {
-  return <Dashboard />
+  return (
+    <AuthProvider>
+      <Dashboard />
+    </AuthProvider>
+  )
 }
